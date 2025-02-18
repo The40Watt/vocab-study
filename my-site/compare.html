@@ -1,0 +1,55 @@
+<!DOCTYPE html> <html lang="en"> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Levenshtein Distance on Blur</title> 
+    <script> // Levenshtein Distance Function 
+    function levenshteinDistance(a, b) { 
+        let m = a.length, n = b.length; 
+        let dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0)); 
+        for (let i = 0; i <= m; i++) dp[i][0] = i; 
+        for (let j = 0; j <= n; j++) dp[0][j] = j; 
+        for (let i = 1; i <= m; i++) { 
+            for (let j = 1; j <= n; j++) { 
+                let cost = a[i - 1] === b[j - 1] ? 0 : 1; 
+                dp[i][j] = Math.min( dp[i - 1][j] + 1, // Deletion 
+                dp[i][j - 1] + 1, // Insertion 
+                dp[i - 1][j - 1] + cost // Substitution
+             ); 
+            } 
+        } 
+        return dp[m][n]; 
+    } 
+             
+             
+             // Function to update Levenshtein distance when exiting input field (on blur) 
+             function updateDistance(event) { 
+                let inputField = event.target; // Get the input field where the event occurred 
+                let row = inputField.closest("tr"); // Get the row containing the input field 
+                let prePopulatedCell = row.cells[2]; // Get Column C (Pre-populated) 
+                let outputCell = row.cells[3]; // Get Column D (Output) 
+
+                let str1 = inputField.value.trim(); // Column B (Editable input field) 
+                let str2 = prePopulatedCell.innerText.trim(); // Column C (Pre-populated) 
+
+                if (str1 && str2) { 
+                    let distance = levenshteinDistance(str1, str2); 
+                    outputCell.innerText = distance; // Output to Column D 
+                    } else { 
+                        outputCell.innerText = ""; // Clear result if input is empty 
+                        } 
+                    } 
+                    </script>
+                     </head> 
+                     <body> 
+                        <h2>Compare Strings on Cell Exit (Blur Event)</h2>
+                         <p>Type in the input field (Column B) and move out to see the Levenshtein distance in Column D.</p>
+                          <table id="dataTable" border="1">
+                             <tr> 
+                                <th>Row</th> <th>Input String (Editable)</th> <th>Pre-Populated String</th> <th>Levenshtein Distance</th> </tr> 
+                                <tr> <td>1</td> <td><input type="text" onblur="updateDistance(event)"></td> <td>hello</td> <td></td> </tr> 
+                                <tr> <td>2</td> <td><input type="text" onblur="updateDistance(event)"></td> <td>sitting</td> <td></td> </tr>
+                                 <tr> <td>3</td> <td><input type="text" onblur="updateDistance(event)"></td> <td>JavaScript</td> <td></td> </tr> 
+</table>
+ </body>
+  </html>

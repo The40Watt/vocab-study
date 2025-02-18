@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+*{
+    box-sizing: border-box;
+    font-family: "Montserrat";
+    padding: 0;
+    margin: 0;
+}
+.product{
+    box-shadow: 10px 10px 10px rgba(0,0,0,0.3);
+    border-radius: 20px; /* This will round edges. */
+}
+
+/*body{
+    width: 100%;
+    padding: 120px;
+}*/
+
+.main_container{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 30px;
+}
+
+.product img{
+    width: 100%;
+    border-top-right-radius: 20px; /* rounding corners */
+    border-top-left-radius: 20px;
+}
+
+.product_desc {
+    text-align: center;
+    padding: 20px 0px; /*increase space around caption */
+}

@@ -1,0 +1,20 @@
+1. Achievement / badges
+2. Contact form
+3. Language choice
+4. Categories
+5. Check username exists in sign-up
+6. Change code on select of number of tests to do to use codes table.
+7. text on show-data where it gives count of records. need new function to count with categories?
+
+Achievement
+a. first word
+b. every category used (select count distinct categories, if = 9 then must have completed all categories)
+c. first tests
+d. sign-up (add note on index to say you earned your first badge. )
+
+
+\\\\\\\\\\\\
+\\ ISSUES \\
+\\\\\\\\\\\\\
+
+Correct date on Badge number 1.

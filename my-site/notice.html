@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/simple.css">
+
+    <style>
+        .notice {
+  background-color: #EFEFEF;
+  border: 3px solid #444;
+  padding: 1rem;
+  margin: 2rem 0;
+  width: 75%;
+}
+
+.notice::before {
+  content: "FACT";
+  background: #AACCFF;
+  width: 5rem;
+  border-right: 3px solid #444;
+  border-bottom: 3px solid #444;
+  border-left: 3px solid #444;
+  border-top: 3px solid #444;
+
+  display: block;
+  text-align: center;
+  position: relative;
+  left: 1rem;
+  top: -2rem;
+  padding: 2px 10px;
+  font-weight: bold;
+}
+    </style>
+</head>
+<body>
+
+<p class="notice">Here be dragons! This is my notice box!</p>
+
+<a href="/my-site/input.php">Indexs</a>
+    
+</body>
+</html>
