@@ -1,5 +1,5 @@
 # WORD UP
-** Build your vocabulary one word at a time.
+**Build your vocabulary one word at a time.
 
 ## Description
 The idea behind the website is to help language learners build out their vocabulary in their target language. The website is designed to be a clean and bloat free experience.  The functionality is simple, add new words to your vocabulary library and then test your recall of those words. The test feature will always pick the words that have been tested the least. There is other functionality there to edit existing words or delete them from your library. When adding new words, you must choose what category they will be stored under.
