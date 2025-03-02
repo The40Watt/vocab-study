@@ -22,6 +22,8 @@ I have several new features planned once the website is active.
 Just myself.
 
 ## Version History
++ 0.9.1
+    + Large visual upgrade 
 + 0.9
     + This is the BETA release.
     + No know issues in the code.
