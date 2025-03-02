@@ -1,3 +1,23 @@
+<!-- 
+    
+    AUTHOR: STEPHEN LENNON
+    DATE: 19-02-2025
+
+    HIGHLEVEL DESCRIPTION: 
+    This file is the logic to post the users message to tb_message.
+
+    DETAILS:
+    This file is called from 'about.php' when the user presses 'Send Message'.
+    The message is not sent via email, rather it is saved to the DB.
+    There is logic to check if the message was saved correctly to the tb_message and will display success or failure to the user. 
+
+
+    CHANGE HISTORY:
+
+
+-->
+
+
 <?php
 session_start();
 //Open db connection.
@@ -77,41 +97,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();*/
 }
 
-
-
-/*if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = trim($_POST["name"]);
-    $email = trim($_POST["email"]);
-    $message = trim($_POST["message"]);
-
-    //Validate inputs
-    if (empty($name) || empty($email) || empty($message)) {
-        die("<p style='color:red;'>All fields are required.</p>");
-    }
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        die("<p style='color:red;'>Invalid email format.</p>");
-    }
-
-    //email settings
-    $to = "stlennon21@gmail.com";
-    $subject = "New Contact Form Submission";
-    $headers = "From: $email\r\nReply-To: $email\r\n\Content-Type: text/plain; charset=UTF-8";
-
-    $email_body = "Name: $name\nEmail: $email\n\nMessage:\n$message";
-
-    //send email
-    if (mail($to, $subject, $email_body, $headers)) {
-        echo "<p style='color:green;'>Message sent successfully!</p>";
-
-        //redirect the user
-        header("Location: about.php?contact-email-sent");
-    } else {
-        echo "<p style=color:red;'>Message failed to send.</p>";
-
-        //redirect the user
-        header("Location: about.php?contact-email-fail");
-    }
-}*/
 
 ?>

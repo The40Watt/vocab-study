@@ -1,3 +1,26 @@
+<!-- 
+    
+    AUTHOR: STEPHEN LENNON
+    DATE: 19-02-2025
+
+    HIGHLEVEL DESCRIPTION: 
+    This page will allow the user to test their recall of words they have entered into the database. They can choose to test by category
+    if they wish. The logic will return words with the lowest 'test' value, i.e. number of times has been selected for testing.
+
+    DETAILS:
+    The drop-down field for categories is driven by tb_categories. The same code is used on 'show-data.php' and 'input.php' to retrive categories
+    from the DB.
+    There is a script at the top of the HTML to work out Levenshtein Distance and a script under that to update the cell on the table with the score. These
+    are written in JavaScript.
+    There is a check on tb_test_history, to see if the user has a row. If a user doesn't have a row, then they have never used the test function before and 
+    a row will be added. A user will only ever have one row on this table. This is used for logic in awarding a badge for user doing their first test.
+    The script to reveal the hidden column is written in JavaScript.
+
+    CHANGE HISTORY:
+
+
+-->
+
 <?php
 
 	//Put user_id into session and check on each page to see if the user_id is legit.
@@ -7,44 +30,57 @@
 
 	include("include/connection.php");
 	include("include/functions.php");
+
+    //this will ensure PHP displays all errors
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
 	
 	$user_data = check_login($conn); //if logged in, this variable will contain the user data
 
 ?>
 
+
+
 <?php
 
-	//-------------------
-  // Function to select categories from the codes table. 
-  //-------------------
+	//Get data from ct_categories, used to populate teh drop-down form. 
 	$sql = "SELECT * FROM `ct_categories`";
-	$result = $conn->query($sql);
+	//$result = $conn->query($sql);
+	$result = mysqli_query($conn, $sql);
 
+	//Check for errors on sql query
+	if (!$result) {
+		echo "Error: " . mysqli_error($conn);
+	} elseif (mysqli_num_rows($result) > 0) {
+		//echo "Select successful, found " . mysqli_num_rows($result) . " rows.";
+	} else {
+		echo "There is a problem finding the list of categories.";
+	}
 ?>
 
 <!doctype html>
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Test</title>
+		<title>Word Up: Test</title>
         <script>
             //Levenshtein Distance Function
             function levenshteinDistance(a, b) { 
-        let m = a.length, n = b.length; 
-        let dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0)); 
-        for (let i = 0; i <= m; i++) dp[i][0] = i; 
-        for (let j = 0; j <= n; j++) dp[0][j] = j; 
-        for (let i = 1; i <= m; i++) { 
-            for (let j = 1; j <= n; j++) { 
-                let cost = a[i - 1] === b[j - 1] ? 0 : 1; 
-                dp[i][j] = Math.min( dp[i - 1][j] + 1, // Deletion 
-                dp[i][j - 1] + 1, // Insertion 
-                dp[i - 1][j - 1] + cost // Substitution
-             ); 
+            let m = a.length, n = b.length; 
+            let dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0)); 
+            for (let i = 0; i <= m; i++) dp[i][0] = i; 
+            for (let j = 0; j <= n; j++) dp[0][j] = j; 
+            for (let i = 1; i <= m; i++) { 
+                for (let j = 1; j <= n; j++) { 
+                    let cost = a[i - 1] === b[j - 1] ? 0 : 1; 
+                    dp[i][j] = Math.min( dp[i - 1][j] + 1, // Deletion 
+                    dp[i][j - 1] + 1, // Insertion 
+                    dp[i - 1][j - 1] + cost // Substitution
+                ); 
+                } 
             } 
-        } 
-        return dp[m][n]; 
-    } 
+                return dp[m][n]; 
+            } 
 
             //Function to update Levenshtein distance when exiting cell 1
             function updateDistance(event) {
@@ -69,123 +105,71 @@
                     }
                 }
             }
-
-
         </script>
 
-		<link rel="stylesheet" href="css/simple.css">
+		<link rel="stylesheet" href="css/stylin.css">
         <style>
-            .custom-select {
-            min-width: 350px;
-            position: relative;
-            }
-
-            .custom-select select {
-            appearance: none;
-            width: 50%;
-            font-size: 1.15rem;
-            padding: 0.675em 6em 0.675em 1em;
-            background-color: #fff;
-            border: 1px solid #caced1;
-            border-radius: 0.25rem;
-            color: #000;
-            cursor: pointer;
-            }
-
-            table {
-	border-collapse: collapse;
-    font-family: Tahoma, Geneva, sans-serif;
-}
-table td {
-	padding: 15px;
-}
-table thead td {
-	background-color:rgb(6, 64, 136);
-	color: #ffffff;
-	font-weight: bold;
-	font-size: 13px;
-	border: 1px solid #54585d;
-}
-
-table tbody td {
-	color: #636363;
-	border: 1px solid #dddfe1;
-}
-table tbody tr {
-	background-color: #f9fafb;
-}
-table tbody tr:nth-child(odd) {
-	background-color: #ffffff;
-}
-
-.hoverTable tr:hover {
-	background-color:rgb(99, 183, 134);
-}
-
-.hoverTable thead td {
-	background-color:rgb(6, 64, 136);
-	color: #ffffff;
-	font-weight: bold;
-	font-size: 13px;
-	border: 1px solid #54585d;
-}
-
-
+            
         </style>
 	</head>
 
 	
 	
 	<body>
-
 		<header>
-
-		<?php include "include/nav.php" ?>
-            
-			<h1>Vocabulary Recall Test</h1>
+    		<?php include "include/nav.php" ?>
 		</header>
 
 		<main>
-        
+            <p></p>
+            <!-- This is the code to display instructions to the user. An accordian field. -->
             <details>
-                <summary>Additional info.</summary>
-                <p>Select how many words you wish to test yourself on from the drop-down menu below. This will return words that you have tested the least up to the value you have chose. <p>
-                <p>The levenshtein value.</p>
+                <summary>ADDITIONAL INFORMATION</summary>
+                <p>To do a test, select the category and how many words you wish to test yourself on from the drop-down menus. Press <i>'Submit'</i>. Leaving the <i>category</i> blank will retrieve words from all your categories.</p>
+                <p>This will return words that you have tested the least in your chosen category, up to the value you have chosen. </p>
+                <p>When you have given an answer to all the words, press <i>'Reveal'</i> to show the words in your native language. </p>
+                <p>The accuracy score is using <strong>'Levenshtein Distance'</strong>. This distance is a number that tells you how different two strings are. The higher the number, the more different the two strings are.</p>
             </details>
 
-     <div class="custom-select">
-        <form method="post">
-            <label for="dropdown">Choose a Category and how many words to test:</label>
-                <select name="category" id="category">
-                    <option value="">-- Category --</option>    
-                        <?php
-                            if ($result->num_rows > 0 ) {
-                              while ($row = $result->fetch_assoc()) {
-                                echo '<option value="' . htmlspecialchars($row['category_desc']) . '">' . htmlspecialchars($row['category_desc']) . '</option>';
-                              }
-                            }
-                        ?>
-                </select>
-                <select name="dropdown" id="dropdown">
-                    <option>-- Amount of words to test -- </option>
-                    <!-- <option value="10" <?php echo (isset($_POST['dropdown']) && $_POST['dropdown'] == '10') ? 'selected' : ''; ?>>10</option> -->
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                    <option value="50">50</option>
-                </select>
-                <input type="submit" value="Submit">
-            </form>
-        </div>
-
+            <!-- Start of form code for Category and number of words drop-downs and submit button. -->
+            <div class="card">
+                <div class="custom-select">
+                    <form class="card-form" method="post">
+                        <label class="new-input-label" for="dropdown">Choose Category & number of words.</label><p></p>
+                            <select class="new-input-field" name="category" id="category">
+                                <option value="">-- Category --</option>    
+                                    <?php
+                                        if ($result->num_rows > 0 ) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo '<option value="' . htmlspecialchars($row['category_desc']) . '">' . htmlspecialchars($row['category_desc']) . '</option>';
+                                        }
+                                        }
+                                    ?>
+                            </select>
+                            <p></p>
+                            <select class="new-input-field" name="dropdown" id="dropdown">
+                                <option>-- Amount of words to test -- </option>
+                                <!-- <option value="10" <?php echo (isset($_POST['dropdown']) && $_POST['dropdown'] == '10') ? 'selected' : ''; ?>>10</option> -->
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>
+                                <option value="50">50</option>
+                            </select>
+                            <div class="action">
+                                <input class="btn btn--secondary" type="submit" value="SUBMIT">
+                            </div>
+                    </form>
+                </div>
+            </div>
+                                
             <table id="dataTable" class="hoverTable">
                 <thead>
                     <tr>
-                        <td>French Text</td>
+                        <td>Target Language</td>
                         <td>Answer</td>
-                        <td>Leveshtein</td>
-                        <td>English Text</td>
+                        <td>Accuracy</td>
+                        <td>Native Language</td>
                     </tr>
                 </thead>
             <tbody>
@@ -199,9 +183,26 @@ table tbody tr:nth-child(odd) {
                     $selected_category = $_POST['category'];
                 }
 
+                
                 if($selected_value > 0) {
                 //set user_id so we can only see which words the logged in user has entered.
                 $user_id = $_SESSION['user_id'];
+
+                //Code to check if tb_test_history has a row and add one if not.
+                $sql_test_history = "SELECT * FROM `tb_test_history` WHERE user_id='$user_id' LIMIT 1";
+                $run_sql_test_history = mysqli_query($conn, $sql_test_history);
+
+                if(mysqli_num_rows($run_sql_test_history) == 0) {
+
+                    //if number of rows is 0, then add 1 row for this user. Will only ever be 1 row for each user.
+                    $sql_upd_history = "INSERT INTO `tb_test_history` (`user_id`) VALUES ('$user_id')";
+                    //$run_upd_history = mysqli_query($conn, $sql_upd_history);
+
+                    //Execute SQL and check for errors
+                    if (!mysqli_query ($conn, $sql_upd_history)) {
+                        echo ("SQL Error: ") . $sql_upd_history . "<br>" . mysqli_error($conn);
+                    }
+                }
 
                 //php code to select from db
                 //If a category has been chosen, it needs to be in the SQL select.
@@ -226,27 +227,35 @@ table tbody tr:nth-child(odd) {
                             <td><?php echo $row['en_text'] ?></td>
                         </tr>
             <?php
-                        //Update query
+                        //Increment the test_count field on tb_vocab
                         $updateQuery = "UPDATE `tb_vocab` SET `test_count`='$test_cnt' WHERE id = '$id'";
                         $runquery = mysqli_query($conn, $updateQuery);
                     } //close while
-                } //close if
+                } else {
+                    //no words in chosen category
+                    ?>
+                    <div class="alert warning">
+                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                        You do not have any words in your chosen Category.
+                    </div>
+                <?php 
+                }//close if
             }?>
             </tbody>
-        </table>
+            </table>
+            <p></p>
 
-
-                <!-- Add button to reveal hidden column. -->
-                <button id="viewColumnBtn" onclick="toggleColumn(3)">Reveal</button> 
+            <!-- Add button to reveal hidden column. -->
+            <button class="btn btn--secondary" id="viewColumnBtn" onclick="toggleColumn(3)">Reveal</button> 
                 
-                <script>
-                    //This script will automatically press the 'Reveal' button when page is loaded to hide column
-                    window.onload = function() {
-                        setTimeout(function() {
-                            document.getElementById("viewColumnBtn").click(); },0);
-                    };
-                </script>
-
+            <script>
+                //This script will automatically press the 'Reveal' button when page is loaded to hide column
+                window.onload = function() {
+                    setTimeout(function() {
+                        document.getElementById("viewColumnBtn").click(); },0);
+                };
+            </script>
+        <p></p>
 		</main>
 
         <script>
@@ -261,8 +270,8 @@ table tbody tr:nth-child(odd) {
                 }
             }
         </script>
-		<footer>
-			<p>Made by me.</p>
-		</footer>
+
+		<!-- Add the footer. -->
+		<?php include "include/footer.php" ?>
 	</body>
 </html>

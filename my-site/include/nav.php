@@ -1,4 +1,3 @@
-
 <?php
 
 function aria_current($url) {
@@ -18,12 +17,23 @@ function aria_current($url) {
 }
 ?>
 
-<nav>
-    <a href="/my-site/" <?php aria_current('my-site/index.php') ?> >Home</a>
-    <a href="/my-site/input.php"<?php aria_current('/input.php') ?> >Add Vocabulary</a>
-    <a href="/my-site/show-data.php"<?php aria_current('/show-data.php') ?> >Vocabulary List</a>
-    <a href="/my-site/test.php"<?php aria_current('/test.php') ?> >Vocabulary Test</a>
-    <a href="/my-site/badges.php"<?php aria_current('/badges.php') ?> >Badges</a>
-    <a href="/my-site/about.php"<?php aria_current('/about.php') ?> >Contact</a>
-    <a href="/my-site/logout.php"<?php aria_current('/logout.php') ?> >Logout</a>
-</nav>
+<!--<nav>-->
+
+
+    <h2 class="logo">Word <span class="high">Up</span> <span class="tiny">(BETA)</span></h2>
+    <ul>
+        <li class="list__item"><a href="/my-site/">Home</a></li>
+        <li class="list__item"><a href="/my-site/input.php"<?php aria_current('/input.php') ?>>Add a Word</a></li>
+        <li class="list__item"><a href="/my-site/show-data.php">Your Words</a></li>
+       <!-- <li class="list__item"><a href="/my-site/test.php">Vocabulary Test</a></li> -->
+        <li class="list__item"><a href="/my-site/badges.php">Badges</a></li>
+        <li class="list__item"><a href="/my-site/about.php">Contact</a></li>
+        <li class="list__item"><a href="/my-site/faq-page.php">FAQ</a></li>
+        <li class="list__item"><a href="/my-site/logout.php">Logout</a></li>
+        <!-- <li class="list__item"><a href="/my-site/column-style.php">Styles</a></li> -->
+        <!-- <li class="list__item"><a href="/my-site/index-alt.php">ALT INDEX</a></li> -->
+
+
+    </ul>
+        <a  href="/my-site/test.php"><button>Test Now</button></a>
+<!--</nav>-->
