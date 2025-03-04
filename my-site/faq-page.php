@@ -13,6 +13,8 @@
 
     CHANGE HISTORY:
 
+    03-03-25: Added row on FAQ page to explain the concept of mastery. 
+
 
 -->
 <?php
@@ -109,6 +111,24 @@
           <p>
             <strong>More fun. </strong>Like the badges, the plan is to add some more functions to highlight achievements of users on the site and maybe introduce some
             friendly competition among you.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="accordion">
+          WORD MASTERTY?
+        <i class="fa-solid fa-circle-chevron-down"></i>
+        </button>
+        <div class="pannel">
+          <p>
+            As you continue your language learning journey you will pick up more and more vocabulary every day. As you continue to see these words, you will learn them
+            well enough that you no longer need to see and practice them. That is where the concept of <strong>Mastery</strong> comes in. 
+          </p>
+          <p>&nbsp;</p>
+          <p>
+            You can mark a word as <i>mastered</i> in your vocabularly library, or unmark it if needed. Once it is marked, you can choose to filter it out of your list 
+            view in your library and it will not appear in a test while it is marked. 
           </p>
         </div>
       </div>

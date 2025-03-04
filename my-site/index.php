@@ -16,6 +16,17 @@
 
     CHANGE HISTORY:
 
+    02-03-25: Added style class 'recent' that will make lists dipslay horizontal. 
+            
+              Added change to recent activity related to mastery. A call to new function to retrieve last five mastered words. 
+
+              Added new function to calculate the percentage of mastered words out of the total number of words. 
+    
+    04-03-25: Added new function to calculate the average time it takes to master a word. The output is display in the users stats.
+
+              Fixed bug where the display of the page was broken when the user is new and has no words. Added multiple checks for rowcount (of words) greater 
+              than zero.
+
 
 -->
 
@@ -28,10 +39,8 @@
 	include("include/connection.php");
 	include("include/functions.php");
     include("include/file-functions.php");
+    include("include/error-logging.php");
 
-    //this will ensure PHP displays all errors
-	error_reporting(E_ALL);
-	ini_set('display_errors', 1);
 	
     //Declare variables
     $cnt = 0;
@@ -39,10 +48,19 @@
     $test_cnt = 0;
     $rand_word = '';
 
+    //Variable to define new user (no words on tbvocab)
+    $new_user = '';
+
 	$user_data = check_login($conn); //if logged in, this variable will contain the user data
 	$rowcount = count_records($cnt);
-    $next_word = next_word($word);
-	$tested_count = number_of_tests($test_cnt);
+
+    if ($rowcount > 0) {
+        $next_word = next_word($word);
+        $tested_count = number_of_tests($test_cnt);
+        $mastered_count = count_mastered_words();
+        $not_tested_count = number_not_tested();
+        $average_to_mastery = calc_average_time_mastery();
+    }
 
     //If the random word for the session has already been set, then skip this call.
     if (!isset($_SESSION['session_word'])) {
@@ -62,18 +80,52 @@
 
         <style>
             <style>
-#myProgress {
-  width: 100%;
-  background-color: #ddd;
-}
+ #myProgress {
+            width: 100%;
+            background-color: #ddd;
+        }
 
-#myBar {
-  width: 1%;
-  height: 30px;
-  background-color: #04AA6D;
-  
-}
-</style>
+
+
+
+        #myBar {
+            width: 1%;
+            height: 30px;
+            background-color: #04AA6D;
+        }
+
+
+
+        .recent {
+            display: flex;
+            gap: 10px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .progress-container {
+            width:100%;
+            background-color: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            background-color: green;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            font-weight: bold;
+            transition: width 0.3s ease-in-out;
+        }
+
+        #progress-bar-1 {background-color: #4caf50;}
+        #progress-bar-2 {background-color: blue;}
+
+        </style>
 	</head>
 
 	<body>
@@ -133,7 +185,9 @@
           <!-- Check if the user is new, i.e. has no saved vocab. If so, direct them to the input page to get started. -->
           <?php 
               //$rowcount = 0;	//Set to zero for testing.
-              if($rowcount == 0) { ?>
+              if($rowcount == 0) { 
+            
+            ?>
               <p>It seems that  you haven't added any words to your vocabulary list yet. Why not head over to the <a href="input.php"> Add Vocabulary</a> to get started? </p>
               
               <p>Once you have added some words, you can check out your full list in the <a href="show-data.php">Vocabulary List</a> page.</p>
@@ -144,7 +198,9 @@
       </br>
       <blockquote>One effective way to remember new words is by creating your own personalised vocabulary list. Keep a notebook or digital document where you can put down words you encounter during your language learning journey. Organise the list by categories or themes to make it easier to review and practise regularly.</blockquote>
 
-          <?php	}  else { ?>
+          <?php	}  else { 
+ 
+            ?>
 
             <!--  This is the text a visitor will see if they have already used the site prevously. -->
             <p style="text-align:left; padding-left:200px; width:80%;">Hello <b><?php echo $user_data['user_name']; ?></b>. Welcome back to Word <span class="high">Up</span>.</p>
@@ -160,42 +216,78 @@
                 <img src="images/progress.png" width="100px" alt="">
             </div>
             <h1>PROGRESS & ACHIEVEMENTS</h1>
+            <?php 
+                if($rowcount > 0) {
+            ?>
             <p>Your next word due to be tested is, "<strong><?php echo $next_word; ?></strong>"</p>
 
+            <!-- Progress bar code - mastered words. -->
             <?php
-                $php_var_percent = 80;
+
+                $mastered_percentage = calc_percentage_mastered($rowcount, $mastered_count);
+
+                $not_tested_percentage = calc_percentage_not_tested($rowcount, $not_tested_count);
+
             ?>
 
-            <div id="myProgress">
-                <div id="myBar"><?php echo $php_var_percent . "%"?></div>
-                <p style="text-transform: uppercase;">% words tested</p>
-          </div>
-      
+            <div id="progress-container">   
+                <div id="progress-bar-1" class="progress-bar">0%</div>
+            </div>% words mastered
+            <div id="progress-container">
+                <div id="progress-bar-2" class="progress-bar">0%</div>
+            </div>% words not tested
 
+            <script>
+                let progress1 = 0;
+                let progress2 = 0;
+                let maxProgress1 = <?php echo $mastered_percentage ?>;
+                let maxProgress2 = <?php echo $not_tested_percentage ?>;
+                let interval1, interval2;
 
-          <script>
+                if (maxProgress1 > 0) {
+                    function updateProgress1() {
+                        if (progress1 < maxProgress1) {
+                            progress1 += 1;
+                            document.getElementById("progress-bar-1").style.width = progress1 + "%";
+                            document.getElementById("progress-bar-1").innerText = progress1 + "%";
+                        } else {
+                            clearInterval(interval1);
+                        }
+                    }
+                }
                 
-                var js_var_percent = <?php echo json_encode($php_var_percent); ?>;
-                var i = 0;
-                window.onload = function move() {
-                if (i == 0) {
-                    i = 1;
-                    var elem = document.getElementById("myBar");
-                    var width = 1;
-                    var id = setInterval(frame, 10);
-                    function frame() {
-                    if (width >= js_var_percent) {
-                        clearInterval(id);
-                        i = 0;
+                function updateProgress2() {
+                    if (progress2 < maxProgress2) {
+                        progress2 += 1;
+                        document.getElementById("progress-bar-2").style.width = progress2 + "%";
+                        document.getElementById("progress-bar-2").innerText = progress2 + "%";
                     } else {
-                        width++;
-                        elem.style.width = width + "%";
-                    }
+                        clearInterval(interval2);
                     }
                 }
-                }
-        </script>
 
+                window.onload = function() {
+
+                    //document.getElementById("progress-bar").style.width = progress + "%";
+                    //document.getElementById("progress-bar").innerText = progress + "%";
+
+                    interval1 = setInterval(updateProgress1, 50);
+                    interval2 = setInterval(updateProgress2, 100);
+
+
+                };
+            </script>
+
+
+
+
+            
+
+            <?php
+                } else {
+                    echo "<p>Start adding words to see more information here.</p>";
+                }//end rowcount check greater than 0 
+            ?>
 
 
         </div>
@@ -205,8 +297,17 @@
                 <img src="images/statistics.png" width="100px" alt="">
             </div>
             <h1>YOUR STATS</h1>
-            <p><strong><?php echo $user_data['user_name']; ?></strong>, you have <strong><?php echo $rowcount; ?> </strong>words recorded.</p>
-            <p>You have tested <strong><?php echo $tested_count; ?> </strong>words.</p>
+            <?php 
+                if($rowcount > 0) {
+            ?>
+                <p><strong><?php echo $user_data['user_name']; ?></strong>, you have <strong><?php echo $rowcount; ?> </strong>words recorded.</p>
+                <p>You have 'mastered' <strong><?php echo $mastered_count ?> </strong>words. </p>
+                <p>You have tested <strong><?php echo $tested_count; ?> </strong>words.</p>
+                <p>The average duration between adding a word and marking it as <i>mastered</i> is <strong><?php echo $average_to_mastery; ?></strong> days for you. </p>
+            <?php } else {
+                echo "<p>There are no stats to present yet. </p>";
+            }
+            ?>
         </div>
 
         <div class="card">
@@ -215,22 +316,58 @@
             </div>
             <h1>RECENT ACTIVITY</h1>
             <?php
-                //Call functionto get users last 5 words
-                $five_words = last_five_words();
+                if($rowcount > 0) {
 
-                echo "<h3>Your last " . mysqli_num_rows($five_words) . " words:</h3>";
+                    //Call function to get users last 5 words
+                    $five_words = last_five_words();
+
+                    //If user has less than 5 words, they will not see recent activity.
+                    if (mysqli_num_rows($five_words) < 5) {
+                        echo "<h3> Add at least 5 words to see some stats.</h3>";
+                    } else {
+                        echo "<h3>Your last " . mysqli_num_rows($five_words) . " words:</h3>";   
             ?>
-                <ul>
+                    <ul class="recent">
             <?php  
-                while ($new_row = $five_words->fetch_assoc()) { 
-                ?>
-                <!-- Cycle through array of 5 words. -->
-                <!--<p><?php echo $new_row["fr_text"]; ?> </p> -->
-                <li><?php echo $new_row["fr_text"]; ?> </li>
+                    while ($new_row = $five_words->fetch_assoc()) { 
+                    ?>
+                    <!-- Cycle through array of 5 words. -->
+                    <li><?php echo $new_row["fr_text"]; ?> </li>
             <?php 
-                }
+                    }
             ?>
             </ul>
+            <?php 
+                } //end if statement checking for 5 rows.
+            ?>
+            <?php
+                    //Call function to get users last 5 mastered
+                    $five_mastered = last_five_mastered();
+
+                    if(mysqli_num_rows($five_mastered) < 5) {
+                        echo "<h3> Master at least 5 words to see activity.</h3>";
+
+                    } else {
+                        echo "<h3>Your last " . mysqli_num_rows($five_mastered) . " words mastered:</h3>";
+            ?>
+                    <ul class="recent">
+            <?php  
+                    while ($new_row = $five_mastered->fetch_assoc()) { 
+                    ?>
+                    <!-- Cycle through array of 5 words. -->
+                    <li><?php echo $new_row["fr_text"]; ?> </li>
+            <?php 
+                    }
+            ?>
+            </ul>
+            <?php 
+                    }//end if statement checking for more than 5 mastered words.
+            ?>
+            <?php
+                } else {
+                    echo "<p>No recent activity. </p>";
+                }//end rowcount check for greater than 0
+            ?>
         </div>
     </div>
 
