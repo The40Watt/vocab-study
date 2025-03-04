@@ -413,9 +413,10 @@ function last_five_words() {
 
     //set user_id so we can only see which words the logged in user has entered.
     $user_id = $_SESSION['user_id'];
+    $user_no_words = 'Y';
 
 
-    //PHP code to select next word to be tested
+    //PHP code to select last five words created
     $sql = "SELECT fr_text FROM `tb_vocab` WHERE user_id='$user_id' ORDER BY date DESC  LIMIT 5";
     $run = mysqli_query($conn, $sql);
 
@@ -425,9 +426,189 @@ function last_five_words() {
 		echo "Error: " . mysqli_error($conn);
 	} elseif (mysqli_num_rows($run) > 0) {
 		//echo "Select successful, found " . mysqli_num_rows($run) . " rows.";
-	} else {
-		echo "There is a problem words for user.";
 	}
 
+
    return $run;
+}
+
+
+/*
+    This function will retrive the last 5 words marked as mastered from tb_vocab.
+    It is called from 'index.php'
+*/
+function last_five_mastered() {
+
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+    
+    //PHP code to select last five words to be mastered.
+    $sql = "SELECT fr_text FROM `tb_vocab` WHERE user_id='$user_id' AND is_mastered='Y' ORDER BY date_mastered DESC  LIMIT 5";
+    $run = mysqli_query($conn, $sql);
+
+
+    //Check for errors on sql query
+    if (!$run) {
+        echo "Error: " . mysqli_error($conn);
+    } elseif (mysqli_num_rows($run) > 0) {
+        //echo "Select successful, found " . mysqli_num_rows($run) . " rows.";
+    } 
+
+    return $run;
+
+}
+
+/*
+    This function will retrive the last 5 words marked as mastered from tb_vocab.
+    It is called from 'index.php'
+*/
+function count_mastered_words() {
+
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+    $mastered_cnt = 0;
+
+
+    //php code to select from db
+    $sql = "SELECT * FROM `tb_vocab`WHERE user_id='$user_id' AND is_mastered='Y'";
+    $run = mysqli_query($conn, $sql);
+
+
+    //Check for errors on sql query
+    if (!$run) {
+        echo "Error: " . mysqli_error($conn);
+    } elseif (mysqli_num_rows($run) > 0) {
+        //echo "Select successful, found " . mysqli_num_rows($run) . " rows.";
+        //$mastered_cnt = mysqli_num_rows($run);
+    } 
+
+    $mastered_cnt = mysqli_num_rows($run);
+
+    return $mastered_cnt;
+}
+
+
+/*
+    num1 is number of words. num2 is number of mastered words. Will calc the percentage.
+*/
+function calc_percentage_mastered($num1, $num2) {
+
+    //Declare variable
+    $calc_result = 0;
+
+    //stop division by 0 (if there are no mastered words, num2 will be 0)
+    if ($num2 > 0) {
+        $calc_result = (($num2 / $num1) * 100);
+
+        //intval will remove decimal places.
+        return intval($calc_result);
+    } else {
+        //intval will remove decimal places.
+        return 0;
+    }
+
+}
+
+/*
+    Function to calculate the percentage of words not tested from all the words
+    a user has.
+*/
+function calc_percentage_not_tested($num1, $num2) {
+    
+    //Declare variable
+    $calc_result = 0;
+
+    $calc_result = (($num2 / $num1) * 100);
+
+
+    //intval will remove decimal places.
+    return intval($calc_result);
+
+}
+
+
+/*
+    Function to count the number of words a user has that has a test_count of zero.
+*/
+function number_not_tested() {
+
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+    $not_tested_cnt = 0;
+
+
+    //php code to select from db
+    $sql = "SELECT * FROM `tb_vocab`WHERE user_id='$user_id' AND test_count=0";
+    $run = mysqli_query($conn, $sql);
+
+
+    //Check for errors on sql query
+    if (!$run) {
+        echo "Error: " . mysqli_error($conn);
+    } elseif (mysqli_num_rows($run) > 0) {
+        //echo "Select successful, found " . mysqli_num_rows($run) . " rows.";
+        $not_tested_cnt = mysqli_num_rows($run);
+
+    } else {
+        echo "There is a problem words for user.";
+    }
+
+    return $not_tested_cnt;
+
+}
+
+/*
+    This function is to calculate the average number of days between adding a new word and 
+    marking it as 'mastered'. It select all rows from tb_vocab for a user where is_mastered
+    is 'Y'. It will loop through array and calculat the difference in each date and total up
+    the days, then divide by the number of rows.
+*/
+function calc_average_time_mastery() {
+
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+    $is_mastered = 'Y';
+    $total_days = 0;
+    $average_days = 0;
+
+    //prepare the SQL statement
+    $sql = "SELECT `date`, `date_mastered` FROM `tb_vocab` WHERE user_id='$user_id' AND is_mastered='$is_mastered' ORDER BY id ASC ";
+    $result = $conn->query($sql);
+
+
+    if ($result->num_rows > 0) {
+
+        //Loop through array to calc difference in dates.
+        while ($row = $result->fetch_assoc()) {
+            $date1 = new DateTime($row['date']);
+            $date2 = new DateTime($row['date_mastered']);
+
+            $interval = $date1->diff($date2);
+
+            $total_days += $interval->days;
+        }
+    } else {
+        //echo ("No information found. (calc_average_time_mastery function)");
+        return 0;
+    }
+
+    //Calc average (total days / number of rows)
+    //Avoid division by zero error
+    if ($total_days > 0) {
+
+        $average_days = $total_days / $result->num_rows;
+
+        return intval($average_days);
+    } else {
+        return 0;
+    }
+
 }

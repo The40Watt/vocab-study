@@ -15,6 +15,9 @@
 
     CHANGE HISTORY:
 
+    03-03-25    Mastery changes. Added new toggle field to allow the user to switch the word between mastered or not. The logic has been updated
+                in 'update-record.php' file to make the update to tb_vocab.
+
 
 -->
 
@@ -28,10 +31,8 @@ session_start();
 
 include("include/connection.php");
 include("include/functions.php");
+include("include/error-logging.php");
 
-//this will ensure PHP displays all errors
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 $user_data = check_login($conn); //if logged in, this variable will contain the user data
 
@@ -56,6 +57,9 @@ $user_data = check_login($conn); //if logged in, this variable will contain the 
 
 	<main>
 
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+
         <div class="card">
             
             <!-- Find the word on tb_vocab using 'id'. -->
@@ -64,6 +68,7 @@ $user_data = check_login($conn); //if logged in, this variable will contain the 
                 $sql = "SELECT * FROM tb_vocab WHERE id='$id'";
                 $run = mysqli_query($conn, $sql);
                 $row = mysqli_fetch_array($run);
+                $is_toggled = $row['is_mastered'];
             ?>
 
 		    <form action="update-record.php" method="post" class="form-card">
@@ -77,6 +82,13 @@ $user_data = check_login($conn); //if logged in, this variable will contain the 
                     <input type="text" name="en_text" class="new-input-field" value="<?php echo $row['en_text']; ?>">
                     <label class="new-input-label">Target Language</label>
                 </div>
+                <div class="checkbox_item citem_3">
+		            <div class="title">Word Mastered?</div>
+		                <label class="checkbox_wrap">
+			                <input type="checkbox" name="toggle" class="checkbox_inp" value="Y" <?php echo ($is_toggled === 'Y') ? 'checked' : ''; ?>>
+		                	<span class="checkbox_mark"></span>
+		                </label>
+	            </div>
                 <div class="action">
                     <!-- <input type="submit" name="SubmitButton" class="btn btn-secondary"> -->
                     <button style="width:100%;" class="btn btn--secondary" name="SubmitButton" type="submit">MAKE CHANGE</button><p></p>

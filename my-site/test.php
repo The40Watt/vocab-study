@@ -17,6 +17,7 @@
     The script to reveal the hidden column is written in JavaScript.
 
     CHANGE HISTORY:
+    03-03-25    Change to the selection SQL to bring back words to test. Added on a qualifier to prevent 'mastered' words from coming up in the test.
 
 
 -->
@@ -30,10 +31,8 @@
 
 	include("include/connection.php");
 	include("include/functions.php");
+    include("include/error-logging.php");
 
-    //this will ensure PHP displays all errors
-	error_reporting(E_ALL);
-	ini_set('display_errors', 1);
 	
 	$user_data = check_login($conn); //if logged in, this variable will contain the user data
 
@@ -128,6 +127,7 @@
                 <p>To do a test, select the category and how many words you wish to test yourself on from the drop-down menus. Press <i>'Submit'</i>. Leaving the <i>category</i> blank will retrieve words from all your categories.</p>
                 <p>This will return words that you have tested the least in your chosen category, up to the value you have chosen. </p>
                 <p>When you have given an answer to all the words, press <i>'Reveal'</i> to show the words in your native language. </p>
+                <p>Words that have been marked as <i>'mastered'</i> will no longer appear in the list to be tested. </p>
                 <p>The accuracy score is using <strong>'Levenshtein Distance'</strong>. This distance is a number that tells you how different two strings are. The higher the number, the more different the two strings are.</p>
             </details>
 
@@ -157,7 +157,7 @@
                                 <option value="50">50</option>
                             </select>
                             <div class="action">
-                                <input class="btn btn--secondary" type="submit" value="SUBMIT">
+                                <input style="width:100%;" class="btn btn--secondary" type="submit" value="SUBMIT">
                             </div>
                     </form>
                 </div>
@@ -207,9 +207,9 @@
                 //php code to select from db
                 //If a category has been chosen, it needs to be in the SQL select.
                 if (empty($selected_category)) {
-                    $sql = "SELECT * FROM `tb_vocab`WHERE user_id='$user_id' ORDER BY `test_count` ASC limit $selected_value";
+                    $sql = "SELECT * FROM `tb_vocab`WHERE user_id='$user_id' and is_mastered='N' ORDER BY `test_count` ASC limit $selected_value";
                 } else {
-                    $sql = "SELECT * FROM `tb_vocab`WHERE user_id='$user_id' and category_desc='$selected_category' ORDER BY `test_count` ASC limit $selected_value";
+                    $sql = "SELECT * FROM `tb_vocab`WHERE user_id='$user_id' and category_desc='$selected_category' and is_mastered='N' ORDER BY `test_count` ASC limit $selected_value";
                 }
 
 
@@ -246,7 +246,7 @@
             <p></p>
 
             <!-- Add button to reveal hidden column. -->
-            <button class="btn btn--secondary" id="viewColumnBtn" onclick="toggleColumn(3)">Reveal</button> 
+            <button style="width:100%;" class="btn btn--secondary" id="viewColumnBtn" onclick="toggleColumn(3)">REVEAL</button> 
                 
             <script>
                 //This script will automatically press the 'Reveal' button when page is loaded to hide column

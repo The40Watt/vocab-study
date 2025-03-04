@@ -12,7 +12,8 @@
 	The drop-down form for categories is driven by the table tb_categories.
 
     CHANGE HISTORY:
-
+	
+	02-03-25: Added new column to insert SQL (is_mastered).
 
 -->
 
@@ -67,13 +68,16 @@ if(isset($_POST['SubmitButton']))
 	$english = $_POST['en_text'];
 	$category_desc = $_POST['category'];
 	$initialCount = 0;
+	$is_mastered = 'N';
+	$currentDateTime = date("Y-m-d H:i:s");
+
 
 	//prepare SQL statement
-	$stmt = $conn->prepare("INSERT INTO `tb_vocab` (`fr_text`, `en_text`, `user_id`, `test_count`, `category_desc` ) VALUES (?, ?, ?, ?, ?)");
+	$stmt = $conn->prepare("INSERT INTO `tb_vocab` (`fr_text`, `en_text`, `user_id`, `test_count`, `category_desc`,`is_mastered`,`date_mastered` ) VALUES (?, ?, ?, ?, ?, ?, ?)");
 	
 
 	//bind parameters, tell DB what parameters are.
-	$stmt->bind_param("ssiis", $french, $english, $user_id, $initialCount, $category_desc);
+	$stmt->bind_param("ssiisss", $french, $english, $user_id, $initialCount, $category_desc, $is_mastered, $currentDateTime);
 	$stmt->execute();
 	$stmt->close();
 	
