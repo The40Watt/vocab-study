@@ -37,10 +37,8 @@
 
 	include("include/connection.php");
 	include("include/functions.php");
-
-  //this will ensure PHP displays all errors
-	error_reporting(E_ALL);
-	ini_set('display_errors', 1);
+	include("include/error-logging.php");
+  include("include/badge-record-functions.php");
 	
   $cnt = 0; //define variable.
 	$user_data = check_login($conn); //if logged in, this variable will contain the user data

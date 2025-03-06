@@ -27,6 +27,13 @@
               Fixed bug where the display of the page was broken when the user is new and has no words. Added multiple checks for rowcount (of words) greater 
               than zero.
 
+    04-03-25: Added new include script. Also calling new function (update_word_badges_records) to check badge records.
+
+              Added call to new function (calc_overall_badge_completion) to calculate the percentage of badges a user has earned. This figure is feed into the script
+              to generate a third progress-bar. 
+
+    05-03-25: Added new function (update_mastery_badge_records). It will add row to tb_badge_record for a word mastery achievement if the row does not already exist.
+
 
 -->
 
@@ -40,6 +47,7 @@
 	include("include/functions.php");
     include("include/file-functions.php");
     include("include/error-logging.php");
+    include("include/badge-record-functions.php");
 
 	
     //Declare variables
@@ -47,6 +55,7 @@
     $word = '';
     $test_cnt = 0;
     $rand_word = '';
+    $row_count = 0;
 
     //Variable to define new user (no words on tbvocab)
     $new_user = '';
@@ -66,6 +75,68 @@
     if (!isset($_SESSION['session_word'])) {
         $_SESSION['session_word'] = find_session_word();
     }
+
+
+    //testing variable - REMOVE IT!!!
+   // $row_count = 1;
+
+    //Checking word count related badges - #2, #5, #6, #7, #8
+    //Call new function to insert a row tb_badge_record when user hits milestone word count.
+    /*
+    switch ($row_count) {
+        case 1:
+            update_word_badges_records($row_count);
+            echo ("this is 1");
+            break;
+        case 25:
+            update_word_badges_records($row_count);
+            echo ("this is 25");
+            break;
+        case 100:
+            update_word_badges_records($row_count);
+            echo ("this is 100");
+            break;
+        case 250:
+            update_word_badges_records($row_count);
+            echo ("this is 250");
+            break;
+        case 1000:
+            update_word_badges_records($row_count);
+            echo ("this is 1000");
+            break;
+    }
+    */
+    
+    //testing variable - REMOVE IT!!!
+    //$mastered_count = 1;
+/*
+    //Checking mastery related badges - #10, #11, #12, #13
+    //Call new function to insert a row on tb_badge_record when user hits milestone of mastered words.
+     switch ($mastered_count) {
+        case 1:
+            update_mastery_badge_records($mastered_count);
+            echo ("this is 1");
+            break;
+        case 25:
+            update_mastery_badge_records($mastered_count);
+            echo ("this is 25");
+            break;
+        case 100:
+            update_mastery_badge_records($mastered_count);
+            echo ("this is 100");
+            break;
+        case 250:
+            update_mastery_badge_records($mastered_count);
+            echo ("this is 250");
+            break;
+    }
+*/
+
+    //Check for badge #3 - user has used all 9 categories.
+    $badge_number = 3;
+    count_categories_for_badge($badge_number);
+
+    
 ?>
 
 
@@ -124,6 +195,7 @@
 
         #progress-bar-1 {background-color: #4caf50;}
         #progress-bar-2 {background-color: blue;}
+        #progress-bar-3 {background-color: orange;}
 
         </style>
 	</head>
@@ -228,6 +300,9 @@
 
                 $not_tested_percentage = calc_percentage_not_tested($rowcount, $not_tested_count);
 
+                //Call function to count number of badges awarded to user. Will return a percentage.
+                $badge_completion_percentage = calc_overall_badge_completion();
+
             ?>
 
             <div id="progress-container">   
@@ -236,14 +311,21 @@
             <div id="progress-container">
                 <div id="progress-bar-2" class="progress-bar">0%</div>
             </div>% words not tested
+            <div id="progress-container">
+                <div id="progress-bar-3" class="progress-bar">0%</div>
+            </div>% badges completed
 
             <script>
                 let progress1 = 0;
                 let progress2 = 0;
+                let progress3 = 0;
                 let maxProgress1 = <?php echo $mastered_percentage ?>;
                 let maxProgress2 = <?php echo $not_tested_percentage ?>;
-                let interval1, interval2;
+                let maxProgress3 = <?php echo $badge_completion_percentage ?>;
 
+                let interval1, interval2, interval3;
+
+                //Mastered progress bar
                 if (maxProgress1 > 0) {
                     function updateProgress1() {
                         if (progress1 < maxProgress1) {
@@ -256,6 +338,7 @@
                     }
                 }
                 
+                //Tested progress bar
                 function updateProgress2() {
                     if (progress2 < maxProgress2) {
                         progress2 += 1;
@@ -266,6 +349,17 @@
                     }
                 }
 
+                //Badges progress bar
+                function updateProgress3() {
+                    if (progress3 < maxProgress3) {
+                        progress3 += 1;
+                        document.getElementById("progress-bar-3").style.width = progress3 + "%";
+                        document.getElementById("progress-bar-3").innerText = progress3 + "%";
+                    } else {
+                        clearInterval(interval3);
+                    }
+                }
+
                 window.onload = function() {
 
                     //document.getElementById("progress-bar").style.width = progress + "%";
@@ -273,6 +367,8 @@
 
                     interval1 = setInterval(updateProgress1, 50);
                     interval2 = setInterval(updateProgress2, 100);
+                    interval3 = setInterval(updateProgress3, 75);
+
 
 
                 };
