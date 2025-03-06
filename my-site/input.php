@@ -15,6 +15,10 @@
 	
 	02-03-25: Added new column to insert SQL (is_mastered).
 
+	06-03-25: Added new code to cater for changes to how badges for word count are calculated. After a word is input,
+			  a count is done of words on tb_vocab. If it hits a milestone number, it will add a row to tb_badge_record
+			  if it doesn't exist. 
+
 -->
 
 <?php
@@ -26,10 +30,9 @@
 
 	include("include/connection.php");
 	include("include/functions.php");
+	include("include/error-logging.php");
+    include("include/badge-record-functions.php");
 
-	//this will ensure PHP displays all errors
-	error_reporting(E_ALL);
-	ini_set('display_errors', 1);
 	
 	$user_data = check_login($conn); //if logged in, this variable will contain the user data
 
@@ -81,6 +84,46 @@ if(isset($_POST['SubmitButton']))
 	$stmt->execute();
 	$stmt->close();
 	
+
+	if ($stmt) {
+		//After insert of new word, check word count to see if a badge has been earned. 
+		$sql_count_rows = "SELECT COUNT(*) AS count FROM `tb_vocab` WHERE user_id = ?";
+		$run_count_row = $conn->prepare($sql_count_rows);
+
+		$run_count_row->bind_param("i", $user_id);
+		$run_count_row->execute();
+
+		$run_count_row_result = $run_count_row->get_result();
+		$row = $run_count_row_result->fetch_assoc();
+
+		$word_count = $row['count'];
+
+		//Checking word count related badges - #2, #5, #6, #7, #8
+    	//Call new function to insert a row tb_badge_record when user hits milestone word count.
+    	switch ($word_count) {
+        case 1:
+            update_word_badges_records($word_count);
+            //echo ("this is 1");
+            break;
+        case 25:
+            update_word_badges_records($word_count);
+            //echo ("this is 25");
+            break;
+        case 100:
+            update_word_badges_records($word_count);
+            //echo ("this is 100");
+            break;
+        case 250:
+            update_word_badges_records($word_count);
+            //echo ("this is 250");
+            break;
+        case 1000:
+            update_word_badges_records($word_count);
+            //echo ("this is 1000");
+            break;
+    	}
+	}
+
 	//Keep user on the same page so they can enter more words, rather than redirect to show-data.php
 	if($stmt) {
 		header("Location: input.php?data-entered");
