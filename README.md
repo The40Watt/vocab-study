@@ -22,6 +22,10 @@ I have several new features planned once the website is active.
 Just myself.
 
 ## Version History
++ 0.9.1.2
+    + Update of badges functionality, how they are calculated
+    + Created new badges related to word mastery.
+
 + 0.9.1.1
     + Added word 'mastery' functionality
     + Added two dynamic progress bars to dashboard
