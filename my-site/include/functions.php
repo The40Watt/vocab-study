@@ -145,7 +145,7 @@ function count_records_by_category(String $input)
 
 //Find date of earliest word on tb_vocab table.
 //Used in the badges screen. 
-function find_date_first_word($date)
+function find_date_first_word()
 {
 	include("include/connection.php");
 
@@ -165,7 +165,7 @@ function find_date_first_word($date)
 }
 
 
-function date_of_signup($date)
+function date_of_signup()
 {
     include("include/connection.php");
 
@@ -205,59 +205,7 @@ function check_messages($message_alert) {
 
 }
 
-/*
-    Function to count the number of categories a user has used. 
-    If they have used all 9, they will earn a badge.
-*/
-function count_categories($category_count) {
 
-    //Open DB connection
-    include("include/connection.php");
-
-    //Access user_id.
-    $user_id = $_SESSION['user_id'];
-    $num_categories = 0;
-
-    //Prepare SQL and execute
-    $sql = "SELECT COUNT(DISTINCT category_desc) AS unique_count FROM tb_vocab WHERE user_id='$user_id'";
-    $run = mysqli_query($conn, $sql);
-
-    //If query is successful, check for value. 
-    if($run && $row = $run->fetch_assoc()) {
-
-        //assign value to variable to return
-        $num_categories = $row['unique_count'];
-
-    } else {
-        $num_categories = 0;
-    }
-
-    return $num_categories;
-}
-
-/*
-    Function to check if the user has started a test. 
-    Check tb_vocab for user where test_count is greater than 0.
-*/
-function check_tested($tested) {
-
-    //Open DB connection
-    include("include/connection.php");
-
-    //Access user_id.
-    $user_id = $_SESSION['user_id'];
-
-    //Prepare SQL and execute
-    $sql = "SELECT * FROM tb_vocab WHERE user_id='$user_id' AND test_count > 0";
-    $run = mysqli_query($conn, $sql);
-
-    //Number of rows found with test_count greater than 0 on tb_vocab
-    $test_count = mysqli_num_rows($run);
-
-    //Return count.
-    return $test_count;
-
-}
 
 
 //Find date of earliest word on tb_vocab table.
@@ -321,39 +269,14 @@ function find_date_milestone_word($milestone, $date)
 }
 
 
-/*
-    Function to check if user has a row on tb_message.
-    Takes in two parameters and will pass back if there is a row on the table
-    and the date.
-*/
-function did_reach_out($contacted, $date) 
-{
-	include("include/connection.php");
 
-    //set user_id so we can only see which words the logged in user has entered.
-    $user_id = $_SESSION['user_id'];
-    
-    //php code to select from db
-    $sql = "SELECT * FROM `tb_message` WHERE id_user='$user_id' ORDER BY date ASC LIMIT 1";
-    $run = mysqli_query($conn, $sql);
-
-    $has_contacted = mysqli_num_rows($run);
-
-    //Find the date in the array
-    while($row = mysqli_fetch_array($run)){
-        $message_date = $row['date'];
-    }
-
-    return [$has_contacted, $message_date];
-
-}
 
 
 /*
     Function gather categories user has used. 
     Recode lates date of selection.
 */
-function date_last_category($category_date) {
+function date_last_category() {
 
     //Open DB connection
     include("include/connection.php");
@@ -376,33 +299,7 @@ function date_last_category($category_date) {
 }
 
 
-/* 
-    Function to select date from tb_message_history for a user. 
-    Will only ever be 1 row on this table per user. 
-*/
 
-function find_date_first_test($date)
-{
-	include("include/connection.php");
-
-    //set user_id so we can only see which words the logged in user has entered.
-    $user_id = $_SESSION['user_id'];
-
-    //php code to select from db
-    $sql = "SELECT * FROM `tb_test_history` WHERE user_id='$user_id' LIMIT 1";
-
-    //echo ("sql in new function: ") . $sql;
-    $run = mysqli_query($conn, $sql);
-
-    //Find the date in the array
-    while($row = mysqli_fetch_array($run)){
-        $date_first_test = $row['date'];
-
-       // echo ("date first test:") . $date_first_test;
-    }
-
-    return $date_first_test;
-}
 
 
 /* 
@@ -612,3 +509,127 @@ function calc_average_time_mastery() {
     }
 
 }
+
+
+/*
+    Function to count the number of categories a user has used. 
+    If they have used all 9, they will earn a badge.
+*/
+function count_categories($category_count) {
+
+    //Open DB connection
+    include("include/connection.php");
+
+    //Access user_id.
+    $user_id = $_SESSION['user_id'];
+    $num_categories = 0;
+
+    //Prepare SQL and execute
+    $sql = "SELECT COUNT(DISTINCT category_desc) AS unique_count FROM tb_vocab WHERE user_id='$user_id'";
+    $run = mysqli_query($conn, $sql);
+
+    //If query is successful, check for value. 
+    if($run && $row = $run->fetch_assoc()) {
+
+        //assign value to variable to return
+        $num_categories = $row['unique_count'];
+
+    } else {
+        $num_categories = 0;
+    }
+
+    return $num_categories;
+}
+
+
+
+/*
+    Called from 'index.php'
+    It will retrive from 'tb_test_record' the users most tested category. 
+*/
+function find_most_test_category() {
+
+    //Open DB connection
+    include("include/connection.php");
+
+    //Access user_id.
+    $user_id = $_SESSION['user_id'];
+
+    $most_used_category = '';
+
+    //Select row from tb_badge_record
+    $sql_cat_count = "SELECT
+                            category_desc,
+                        COUNT(category_desc) AS `value_occurrence` 
+                        FROM
+                            `tb_test_record` WHERE user_id=?
+                        GROUP BY 
+                            category_desc
+                        ORDER BY 
+                            `value_occurrence` DESC
+                        LIMIT 1;";
+
+    $run_cat_count = $conn->prepare($sql_cat_count);
+
+    $run_cat_count->bind_param("i", $user_id);
+    $run_cat_count->execute();
+
+    $run_cat_count_result = $run_cat_count->get_result();
+    $row = $run_cat_count_result->fetch_assoc();
+
+
+    //Check number of rows. Otherwise will throw an error on index.php if user has no row.
+    $num_rows = $run_cat_count_result->num_rows;
+
+    if ($num_rows > 0) {
+        //Get users most tested category
+        $most_used_category = $row['category_desc'];
+    }
+
+    return $most_used_category;
+
+}
+
+/*
+    Called from 'index.php'
+    It will retrive from 'tb_test_record' the users last test score. 
+*/
+function get_last_test_score() {
+
+    //Open DB connection
+    include("include/connection.php");
+
+    //Access user_id.
+    $user_id = $_SESSION['user_id'];
+
+    $last_test_score = 0;
+
+    //Select row from tb_badge_record
+    $sql_last_score = "SELECT * FROM `tb_test_record` WHERE user_id=? ORDER BY test_date DESC LIMIT 1;";
+
+    $run_last_score = $conn->prepare($sql_last_score);
+
+    $run_last_score->bind_param("i", $user_id);
+    $run_last_score->execute();
+
+
+
+    $run_last_score_result = $run_last_score->get_result();
+    $row = $run_last_score_result->fetch_assoc();
+
+    //Check number of rows. Otherwise will throw an error on index.php if user has no row.
+    $num_rows = $run_last_score_result->num_rows;
+
+    if ($num_rows > 0) {
+        //Get users last test score.
+        $last_test_score = $row['test_score'];
+    }
+
+
+
+    return $last_test_score;
+
+
+}
+
+

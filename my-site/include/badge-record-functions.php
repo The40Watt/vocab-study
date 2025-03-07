@@ -499,6 +499,43 @@ function check_platinum_badge($badge_number) {
     $badges_earned++; //add 1
     $badges_earned++; //add another, giving 14 in total, the true max
 
+
+    //Add row to tb_platinum_user, only ever one row. So first person to get it is special!
+    if ($badges_earned == 14) {
+
+        //Count how many rows on tb_platinum_user
+        $sql_count_plat = "SELECT COUNT(*) AS count FROM `tb_platinum_user`";
+        $run_count_plat = $conn->prepare($sql_count_plat);
+
+       // $run_count_plat->bind_param("ii", $user_id, $badge_number);
+        $run_count_plat->execute();
+
+        $run_count_plat_result = $run_count_plat->get_result();
+        $cur_row = $run_count_plat_result->fetch_assoc();
+
+        //If count is greater than 0, then skip insert.
+        if ($cur_row['count'] == 0) {
+
+            $is_platinum = 'Y';
+
+            $sql_plat = "INSERT INTO `tb_platinum_user` (`user_id`, `is_platinum`) VALUES (?, ?)";
+            $run_sql_plat = $conn->prepare($sql_plat);
+
+            $run_sql_plat->bind_param("is", $user_id, $is_platinum );
+
+            if ($run_sql_plat->execute()) {
+                //echo ("Row inserted to tb_platinum_user.");
+            } else {
+                echo "Error inserting row (Platinum User)" . $run_sql_plat->error;
+            }
+
+            $run_sql_plat->close();
+        } else {
+           // echo ("Row already exists on tb_platinum_user.");   
+        }
+
+    }
+
     return $badges_earned;
 
 }
@@ -561,3 +598,217 @@ function find_date_first_test($date)
 }
 
 */
+
+
+/*
+    This function is called from the index.php page. 
+    It will calculate what the users current days streak is in adding words. 
+*/
+function find_streak() {
+
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+
+
+    //SQL to calculate the streak.
+    $sql = "WITH ranked_entries AS ( 
+                SELECT date, 
+                RANK() OVER (ORDER BY date DESC) AS rnk 
+                FROM `tb_vocab` 
+                WHERE user_id=? 
+                GROUP BY date
+                ), 
+                streak_data AS ( 
+                    SELECT date, 
+                        DATEDIFF(CURDATE(), date) AS diff, 
+                        rnk 
+                        FROM ranked_entries 
+                    ) 
+                    SELECT COUNT(*) AS streak_days 
+                    FROM streak_data 
+                    WHERE diff = rnk - 1;";
+
+    //Prepare the statements
+    $stmt = $conn->prepare($sql);
+    
+    if (!$stmt) {
+        die("SQL error (current streak): " . $conn->error);
+    }
+
+    //Bind parameter & execute
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+
+    //Get the result
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $streak = $row['streak_days'] ?? 0;
+
+    //Close connections
+    $stmt->close();
+    $conn->close();
+
+    return $streak;
+
+}
+
+/*
+    This function is called from the index.php page. 
+    It will calculate what the users longest streak of adding words is. 
+*/
+function find_longest_streak() {
+
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+
+
+    //SQL to calculate the streak.
+    $sql = "WITH ranked_entries AS (
+                SELECT date,
+                    DATEDIFF(date, LAG(date) OVER (ORDER BY date)) AS diff
+                FROM `tb_vocab`
+                WHERE user_id = ?
+                GROUP BY date
+            )
+            SELECT MAX(@streak := IF(diff = 1, @streak + 1, 1)) AS longest_streak
+            FROM ranked_entries, (SELECT @streak := 1) init;";
+
+    //Prepare the statements
+    $stmt = $conn->prepare($sql);
+    
+    if (!$stmt) {
+        die("SQL error (longest streak): " . $conn->error);
+    }
+
+    //Bind parameter & execute
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+
+    //Get the result
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $streak = $row['longest_streak'] ?? 0;
+
+    //Close connections
+    $stmt->close();
+    $conn->close();
+
+    return $streak;
+
+}
+
+
+/*
+    This is the first cross-user stat.
+    Find the user with the most words on tb_vocab.
+*/
+function am_i_user_with_most_words() {
+
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+    $site_word_leader = 'N';
+
+      //Select row from tb_badge_record
+      $sql_most_words = "SELECT user_id, count(*) AS num_words FROM tb_vocab GROUP BY user_id ORDER BY num_words DESC LIMIT 1;";
+
+      $run_most_words = $conn->prepare($sql_most_words);
+  
+      //$run_most_words->bind_param("i", $user_id);
+      $run_most_words->execute();
+  
+      $run_most_words_result = $run_most_words->get_result();
+      $row = $run_most_words_result->fetch_assoc();
+  
+      //Get users last test score.
+      $user_most_words = $row['user_id'];
+
+      if ($user_id == $user_most_words) {
+            $site_word_leader = 'Y';
+      }
+
+      return $site_word_leader;
+
+}
+
+
+/*
+    This is the second cross-user stat.
+    Find the user with the most rows on tb_test_record.
+*/
+function am_i_user_with_most_tests() {
+
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+    $site_tests_leader = 'N';
+
+    //Select row from tb_badge_record
+    $sql_most_tests = "SELECT user_id, count(*) AS num_tests FROM tb_test_record GROUP BY user_id ORDER BY num_tests DESC LIMIT 1;";
+
+    $run_most_tests = $conn->prepare($sql_most_tests);
+
+    //$run_most_words->bind_param("i", $user_id);
+    $run_most_tests->execute();
+
+    $run_most_tests_result = $run_most_tests->get_result();
+    $row = $run_most_tests_result->fetch_assoc();
+
+    //Get users last test score.
+    $user_most_tests = $row['user_id'];
+
+    if ($user_id == $user_most_tests) {
+        $site_tests_leader = 'Y';
+    }
+
+    return $site_tests_leader;
+
+}
+
+
+/*
+    This is the third cross-user stat.
+    Look on tb_platinum_user and see if the user has a row. 
+    Only 1 row will ever be on this table, so only one user ever gets this award. The first to get the platinum badge.
+*/
+function am_i_platinum_user() {
+
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+    $is_platinum_user = 'N';
+    $is_userid_plat = 0;
+
+
+    //Select row from tb_platinum_user
+    $sql_is_plat = "SELECT user_id, COUNT(*) AS rowcount FROM tb_platinum_user;";
+
+    $run_is_plat = $conn->prepare($sql_is_plat);
+
+    //$run_most_words->bind_param("i", $user_id);
+    $run_is_plat->execute();
+
+    $run_is_plat_result = $run_is_plat->get_result();
+    $row = $run_is_plat_result->fetch_assoc();
+
+    if ($row['rowcount'] > 0 ) {
+        //Get users last test score.
+        $is_userid_plat = $row['user_id'];
+
+        if ($user_id == $is_userid_plat) {
+            $is_platinum_user = 'Y';
+        }
+    }
+    
+    return $is_platinum_user;
+
+}
+
+
