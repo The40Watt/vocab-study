@@ -16,24 +16,34 @@
 
     CHANGE HISTORY:
 
-    02-03-25: Added style class 'recent' that will make lists dipslay horizontal. 
+    02-03-25:   Added style class 'recent' that will make lists dipslay horizontal. 
             
-              Added change to recent activity related to mastery. A call to new function to retrieve last five mastered words. 
+                Added change to recent activity related to mastery. A call to new function to retrieve last five mastered words. 
 
-              Added new function to calculate the percentage of mastered words out of the total number of words. 
+                 Added new function to calculate the percentage of mastered words out of the total number of words. 
     
-    04-03-25: Added new function to calculate the average time it takes to master a word. The output is display in the users stats.
+    04-03-25:   Added new function to calculate the average time it takes to master a word. The output is display in the users stats.
 
-              Fixed bug where the display of the page was broken when the user is new and has no words. Added multiple checks for rowcount (of words) greater 
-              than zero.
+                Fixed bug where the display of the page was broken when the user is new and has no words. Added multiple checks for rowcount (of words) greater 
+                than zero.
 
-    04-03-25: Added new include script. Also calling new function (update_word_badges_records) to check badge records.
+    04-03-25:   Added new include script. Also calling new function (update_word_badges_records) to check badge records.
 
-              Added call to new function (calc_overall_badge_completion) to calculate the percentage of badges a user has earned. This figure is feed into the script
-              to generate a third progress-bar. 
+                Added call to new function (calc_overall_badge_completion) to calculate the percentage of badges a user has earned. This figure is feed into the script 
+                to generate a third progress-bar. 
 
-    05-03-25: Added new function (update_mastery_badge_records). It will add row to tb_badge_record for a word mastery achievement if the row does not already exist.
+    05-03-25:   Added new function (update_mastery_badge_records). It will add row to tb_badge_record for a word mastery achievement if the row does not already exist.
 
+    06-03-25:   Added two graphs - 1) line graph to display recent test scores, 2) doughnut graph to display usage of categories. Each graph
+                uses a separate PHP file (graph-categories.php & graph-test-results.php) to gather the data for the graphs. The data is brought
+                back into index.php in a JSON object.
+
+    07-03-25:   Added two new stats - users longest streak at adding a word and users longest streak on record. Both are calculated in 'badge-record-functions.php'.
+
+                Added two more stats - Users last test score by calling get_last_test_score() and users most tested category by calling find_most_test_category().
+
+                Added 3 cross-site / cross-user trophies. 1) user with the most words, 2) user with the most tests 3) the first user to unlock all 14 badges. Trophy number
+                3 once unlocked, is held by that user indefinitely. The other 2 trophies can switch between users. The calculations for each are in 'badge-record-functions.php'.
 
 -->
 
@@ -48,7 +58,6 @@
     include("include/file-functions.php");
     include("include/error-logging.php");
     include("include/badge-record-functions.php");
-
 	
     //Declare variables
     $cnt = 0;
@@ -148,7 +157,9 @@
         <meta http-equiv="X-UA-Compatible" contents="IE=edge"> 
 		<title>Word Up: Home</title>
 		<link rel="stylesheet" href="css/index-stylin.css">
-
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        
         <style>
             <style>
  #myProgress {
@@ -197,6 +208,57 @@
         #progress-bar-2 {background-color: blue;}
         #progress-bar-3 {background-color: orange;}
 
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: inline;
+}
+
+.container span{
+    font-size: 2.5em;
+    margin: 0 20px;
+}
+    .drop-container .drop{
+    width: 150px;
+    height: 150px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    margin: 0 10px;
+    position: relative;
+    text-shadow: -2px -2px 5px #fff;
+    filter: drop-shadow(4px 4px 10px #fff);
+    box-shadow: 10px 10px 10px rgba(0,0,0,0.1) inset,
+    15px 25px 10px rgba(0,0,0,0.05),
+    15px 20px 20px rgba(0,0,0,.05),
+    inset -10px -10px 15px rgba(255,255,255,0.9);
+    display: inline-block;
+}
+
+.drop-container .drop::before{
+    content: "";
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 10px 10px rgba(0,0,0,0.2);
+    filter: blur(2px);
+}
+
+
+        .drop p{
+    font-size: 1.7em;
+}
+
+
+
         </style>
 	</head>
 
@@ -215,6 +277,55 @@
         <div class="page-title">
             <h1>WORD <span class="high">UP</span> DASHBOARD</h1>
         </div>
+        
+        <!-- Section to display cross-site / cross-user badges. -->
+        <div style="padding-left: 100px;" class="drop-container">
+            <?php 
+                $am_i_word_leader = am_i_user_with_most_words();
+
+                if ($am_i_word_leader == 'Y') {
+            ?>
+                    <div class="drop">
+                        <p><i class="fa-solid fa-ranking-star fa-2xl" style="color: #b0f0cf;"></i></p>
+                    </div>
+                    <span>&nbsp;</span>
+            <?php
+                }
+            ?>
+            <?php 
+                $am_i_tests_leader = am_i_user_with_most_tests();
+
+                if ($am_i_tests_leader == 'Y') {
+            ?>
+                    <div class="drop">
+                        <p><i class="fa-solid fa-medal fa-2xl" style="color: #b0f0cf;"></i></p>
+                    </div>
+                    <span>&nbsp;</span>
+            <?php
+                }
+            ?>
+            <?php 
+
+                //Check if user has all badges.
+                //Putting this check here so that the award will display without user having to visit the 'badges.php' page.
+                $badge_number = 14;
+                $badge_completion = check_platinum_badge($badge_number);
+
+                if ($badge_completion >= 14) {
+                    $am_i_platinum = am_i_platinum_user();
+
+                        if ($am_i_platinum == 'Y') {
+            ?>
+                    <div class="drop">
+                        <p><i class="fa-solid fa-trophy fa-2xl" style="color: #b0f0cf;"></i></p>
+                    </div>
+                    <span>&nbsp;</span>
+            <?php
+                    }
+                }
+            ?>
+        </div>
+
         <!-- <p style="text-align:left; padding-left:200px; width:80%;">Hello <b><?php echo $user_data['user_name']; ?></b>.</p> -->
       
       <!-- Checking if admin user, if so, display notice about new mesages. -->
@@ -399,7 +510,69 @@
                 <p><strong><?php echo $user_data['user_name']; ?></strong>, you have <strong><?php echo $rowcount; ?> </strong>words recorded.</p>
                 <p>You have 'mastered' <strong><?php echo $mastered_count ?> </strong>words. </p>
                 <p>You have tested <strong><?php echo $tested_count; ?> </strong>words.</p>
+                <p>Your most tested word category is: <strong> 
+                    <?php 
+                        echo $most_tested_category = find_most_test_category();
+                    ?>
+                </strong>.</p>
+                <p>Current Steak is: 
+                    <?php  
+                       echo $current_streak = find_streak(); 
+                    ?>
+                    days.
+                </p>
+                <p>Your records streak is: 
+                    <?php  
+                       echo $longest_streak = find_longest_streak(); 
+                    ?>
+                    days.
+                </p>
                 <p>The average duration between adding a word and marking it as <i>mastered</i> is <strong><?php echo $average_to_mastery; ?></strong> days for you. </p>
+
+                <!-- Start of code for test results graph. -->
+                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                <script>
+                    // Fetch data from graphs.php
+                    fetch('graphs-test-results.php?fetch=true')
+                    .then(response => response.json())
+                    .then(data => {
+                        
+                        //Hiding debug code. 
+                        /*
+                            console.log("Fetched Data:", data); // Debugging output
+                            console.log("X-axis values (Dates):", data.x);
+                            console.log("Y-axis values (Scores):", data.y);
+
+                            if (!data.x || !data.y || data.x.length === 0 || data.y.length === 0) {
+                                console.error("Error: Data arrays are empty.");
+                                return;
+                            }
+                        */
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: data.x, // Dates on X-axis
+                                datasets: [{
+                                    label: 'Your Recent Test Scores',
+                                    data: data.y, // Scores on Y-axis
+                                    borderColor: 'blue',
+                                    fill: false
+                                }]
+                            },
+                            options: {
+                                legend: {display: true, "labels": {"fontSize":21,}},
+                                scales: {
+                               // xAxes: [{ ticks: { fontSize: 16}}],
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+                </script>
+                <!-- End of code for test results graph. -->
+
+                
             <?php } else {
                 echo "<p>There are no stats to present yet. </p>";
             }
@@ -411,6 +584,66 @@
                 <img src="images/calendar.png" width="100px" alt="">
             </div>
             <h1>RECENT ACTIVITY</h1>
+
+            <!-- Start of code for test results graph. -->
+            <canvas id="myPieChart" style="width:100%;max-width:600px"></canvas>
+            
+                <script>
+
+                var barColors = [
+                "#D53E4F",
+                "#F46D43",
+                "#FDAE61",
+                "#FEE088",
+                "#FFFFBF",
+                "#E6F596",
+                "#ABDDA4",
+                "#66C2A5",
+                "#3288BD"
+                ];
+                    // Fetch data from graphs.php
+                    fetch('graph-categories.php?fetch=true')
+                    .then(response => response.json())
+                    .then(data => {
+                        
+                        //Hiding debug code. 
+                        
+                            console.log("Fetched Data:", data); // Debugging output
+                            console.log("X-axis values (catgories):", data.x);
+                            console.log("Y-axis values (count):", data.y);
+
+                            if (!data.x || !data.y || data.x.length === 0 || data.y.length === 0) {
+                                console.error("Error: Data arrays are empty.");
+                                return;
+                            }
+                        
+                        var ctx = document.getElementById('myPieChart').getContext('2d');
+                        new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: data.x, // Dates on X-axis
+                                datasets: [{
+                                    backgroundColor: barColors,
+                                    borderColor: "rgba(0,0,255,0.1)", 
+                                    label: 'Category Breakdown',
+                                    data: data.y, // Scores on Y-axis
+                                    borderColor: 'black',
+                                    fill: false
+                                }]
+                            },
+                            options: {
+                                legend: {display: true, "labels": {"fontSize":11,}},
+                                scales: {
+                               // xAxes: [{ ticks: { fontSize: 16}}],
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+                </script>
+                <!-- End of code for test results graph. -->
+
+
             <?php
                 if($rowcount > 0) {
 
@@ -459,6 +692,11 @@
             <?php 
                     }//end if statement checking for more than 5 mastered words.
             ?>
+                <h3>Your last test score: 
+            <?php 
+                    echo $last_score = get_last_test_score();
+            ?>
+                %</h3>
             <?php
                 } else {
                     echo "<p>No recent activity. </p>";

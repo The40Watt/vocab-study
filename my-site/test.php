@@ -17,7 +17,12 @@
     The script to reveal the hidden column is written in JavaScript.
 
     CHANGE HISTORY:
-    03-03-25    Change to the selection SQL to bring back words to test. Added on a qualifier to prevent 'mastered' words from coming up in the test.
+    03-03-25:   Change to the selection SQL to bring back words to test. Added on a qualifier to prevent 'mastered' words from coming up in the test.
+
+    06-03-25:   Added new JavaScript to loop through the cells where the user has entered an answer and it will calculate an overall score. I use this score
+                and the number of words tested, and pass these through to 'test-record.php' to update the new table tb_test_record. I am using a form with 
+                hidden fields to transfer these variables because the values are calculated in JavaScript (client side) and cannot be used on this PHP
+                script (server side). 
 
 
 -->
@@ -108,7 +113,9 @@
 
 		<link rel="stylesheet" href="css/stylin.css">
         <style>
-            
+        #saveButton {
+            display: none;
+        }
         </style>
 	</head>
 
@@ -120,6 +127,18 @@
 		</header>
 
 		<main>
+
+        <!-- Notification of successful deletion.  -->
+        <?php 
+            if(isset($_GET['test-record-updated'])){ 
+        ?>
+            <div class="alert success">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+            Success. Your test records have been updated.
+            </div>
+        <?php } ?>
+
+
             <p></p>
             <!-- This is the code to display instructions to the user. An accordian field. -->
             <details>
@@ -246,8 +265,30 @@
             <p></p>
 
             <!-- Add button to reveal hidden column. -->
-            <button style="width:100%;" class="btn btn--secondary" id="viewColumnBtn" onclick="toggleColumn(3)">REVEAL</button> 
-                
+            <button style="width:100%;" class="btn btn--secondary" id="viewColumnBtn" onclick="toggleColumn(3); calcOverallScore();">REVEAL ANSWERS</button> 
+
+            <p>&nbsp;</p>
+            <!-- New button to save test score. -->
+            <!-- <a href="x" style="width:50%;" class="btn btn-secondary">SAVE SCORE</a> -->
+
+            
+            <?php 
+                //If user has not selected a category, default to 'All'
+                if (empty($selected_category)) {
+                    $selected_category = "All";
+                }
+            ?>
+
+            <form id="myForm" action="test-record.php?category=<?php echo $selected_category ?>" method="POST">
+                <input type="hidden" id="hiddenscore" name="overall_score">
+                <input type="hidden" id="hiddennumwords" name="number_words">
+
+                <button id="saveButton" class="btn" type="submit">SAVE RESULTS</button>
+            </form>
+
+            <!-- This row needs to stay for some reason. -->
+            <p style="text-align: center; font-size: 4rem;line-height: 1;">TEST SCORE: <span id="overallScore"></span>%</p>
+
             <script>
                 //This script will automatically press the 'Reveal' button when page is loaded to hide column
                 window.onload = function() {
@@ -256,6 +297,7 @@
                 };
             </script>
         <p></p>
+
 		</main>
 
         <script>
@@ -269,7 +311,41 @@
                     rows[i].cells[colIndex].style.display = isHidden ? "": "none";
                 }
             }
+
+            //New function to calc overall score
+            function calcOverallScore() {
+                let table = document.getElementById("dataTable");
+
+                let rows = table.getElementsByTagName("tr");
+                let total = 0;
+                let count = 0;
+
+                for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header
+                    let cellValue = parseFloat(rows[i].cells[2].innerText); // 3rd column (index 2)
+                    if (!isNaN(cellValue)) {
+                        total += cellValue;
+                        count++;
+                    }
+                }
+
+                let overallScore = count > 0 ? (total / count) : 0; // Average score
+                document.getElementById("overallScore").innerText = overallScore.toFixed(2);
+                
+                //These two values below will be passed to hidden fields in a form to be passed to 'test-record.php'
+                document.getElementById("hiddenscore").value = overallScore.toFixed(2);
+                document.getElementById("hiddennumwords").value = count;
+
+                if (overallScore > 0) {
+                    // Make the save button visible
+                    saveButton.style.display = 'inline';
+                }
+            }
+
+
         </script>
+
+
+
 
 		<!-- Add the footer. -->
 		<?php include "include/footer.php" ?>
