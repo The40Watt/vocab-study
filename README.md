@@ -22,6 +22,11 @@ I have several new features planned once the website is active.
 Just myself.
 
 ## Version History
++ 0.9.1.3
+    + Update of index.php to add new stats and graphs
+    + Added ability for user to save test results
+    + New awards that are calculated across users.
+      
 + 0.9.1.2
     + Update of badges functionality, how they are calculated
     + Created new badges related to word mastery.
