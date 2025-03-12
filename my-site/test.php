@@ -24,6 +24,8 @@
                 hidden fields to transfer these variables because the values are calculated in JavaScript (client side) and cannot be used on this PHP
                 script (server side). 
 
+    08-03-25:   Changed way the categories drop-down is populated. It now calls a function (populate_category_dropdown) to keep it cleaner. 
+
 
 -->
 
@@ -46,20 +48,8 @@
 
 
 <?php
-
-	//Get data from ct_categories, used to populate teh drop-down form. 
-	$sql = "SELECT * FROM `ct_categories`";
-	//$result = $conn->query($sql);
-	$result = mysqli_query($conn, $sql);
-
-	//Check for errors on sql query
-	if (!$result) {
-		echo "Error: " . mysqli_error($conn);
-	} elseif (mysqli_num_rows($result) > 0) {
-		//echo "Select successful, found " . mysqli_num_rows($result) . " rows.";
-	} else {
-		echo "There is a problem finding the list of categories.";
-	}
+	//Populate the array to fill the category drop-down.
+	$result = populate_category_dropdown();
 ?>
 
 <!doctype html>
