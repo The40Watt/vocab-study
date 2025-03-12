@@ -632,4 +632,152 @@ function get_last_test_score() {
 
 }
 
+/*
+    Rather than having the SQL in individual files to lookup the users categories, it has been moved into this function. 
 
+*/
+function populate_category_dropdown() {
+
+    //Open DB connection
+    include("include/connection.php");
+
+    //Access user_id.
+    $user_id = $_SESSION['user_id'];
+
+    //Get data from ct_categories, used to populate teh drop-down form. SQL has a union with 'tb_user_category' to get user created categories. 
+    //$sql = "SELECT category_desc, id from `ct_categories` UNION SELECT category_desc, id FROM `tb_user_category` WHERE user_id='$user_id' ORDER BY category_desc ASC";
+
+    $sql = "SELECT category_desc, id FROM `tb_user_categories` WHERE user_id='$user_id' ORDER BY category_desc ASC";
+    $result = mysqli_query($conn, $sql);
+
+    //Check for errors on sql query
+    if (!$result) {
+        echo "Error: " . mysqli_error($conn);
+    } elseif (mysqli_num_rows($result) > 0) {
+        //echo "Select successful, found " . mysqli_num_rows($result) . " rows.";
+    } else {
+        echo "There is a problem finding the list of categories.";
+    }
+
+    return $result;
+
+}
+
+
+
+/*
+    Rather than having the SQL in individual files to lookup the users categories, it has been moved into this function. 
+
+*/
+function populate_language_dropdown() {
+
+    //Open DB connection
+    include("include/connection.php");
+
+    $sql = "SELECT * FROM `ct_languages` ORDER BY id ASC";
+    $lang_result = mysqli_query($conn, $sql);
+
+    //Check for errors on sql query
+    if (!$lang_result) {
+        echo "Error: " . mysqli_error($conn);
+    } elseif (mysqli_num_rows($lang_result) > 0) {
+        //echo "Select successful, found " . mysqli_num_rows($result) . " rows.";
+    } else {
+        echo "There is a problem finding the list of languages.";
+    }
+
+    return $lang_result;
+
+}
+
+/*
+    CAN THIS BE DELETED?
+*/
+function populate_user_created_category_dropdown() {
+
+    //Open DB connection
+    include("include/connection.php");
+    
+    //Access user_id.
+    $user_id = $_SESSION['user_id'];
+    
+    //Get data from ct_categories, used to populate teh drop-down form. SQL has a union with 'tb_user_category' to get user created categories. 
+    $sql = "SELECT category_desc, id from `tb_user_category` WHERE user_id='$user_id' ORDER BY category_desc ASC";
+    
+      $result = mysqli_query($conn, $sql);
+    
+      //Check for errors on sql query
+      if (!$result) {
+          echo "Error: " . mysqli_error($conn);
+      } elseif (mysqli_num_rows($result) > 0) {
+          //echo "Select successful, found " . mysqli_num_rows($result) . " rows.";
+      } else {
+          echo "There is a problem finding the list of categories.";
+      }
+    
+      return $result;
+    
+}
+
+
+/*
+    This is a function to find the target language of the logged in user. 
+*/
+function find_users_tl() {
+
+    //Open DB connection
+    include("include/connection.php");
+    
+    //Access user_id.
+    $user_id = $_SESSION['user_id'];
+
+    //Declare variable
+    $user_tl = '';
+
+    $sql_find_tl = "SELECT tl_code FROM `tb_users` WHERE user_id='$user_id'";
+
+    $run_find_tl = $conn->prepare($sql_find_tl);
+
+    $run_find_tl->execute();
+
+    if($run_find_tl) {
+        $run_find_tl_result = $run_find_tl->get_result();
+        $row = $run_find_tl_result->fetch_assoc();
+
+        //Get value
+        $user_tl = $row['tl_code'];
+
+        $conn->close();
+        $run_find_tl->close();
+
+        return $user_tl;
+    } else {
+        echo ("Error finding target language. ");
+    }
+
+}
+
+
+/*
+    Function to return a greeting in the users target language.
+*/
+function get_user_greeting($lang_code) {
+
+    $greetings_array = [
+        'en' => 'Hello',
+        'fr' => 'Bonjour',
+        'es' => 'Hola',
+        'de' => 'Hallo',
+        'it' => 'Ciao',
+        'pt' => 'Olá',
+        'ru' => 'Здравствуйте',
+        'zh' => '你好',
+        'ja' => 'こんにちは',
+        'ko' => '안녕하세요',
+        'ar' => 'مرحبا',
+        'hi' => 'नमस्ते' ];
+
+        //Return the greeting if the lang_code exists in the array, defaulting to english
+        return $greetings_array[$lang_code] ?? $greetings_array['en'];
+
+}
