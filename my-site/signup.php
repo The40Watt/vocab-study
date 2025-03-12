@@ -1,5 +1,21 @@
 <?php
 
+  /*
+  AUTHOR: STEPHEN LENNON
+  DATE: 19-02-2025
+
+  HIGHLEVEL DESCRIPTION: 
+  This file contains the logic for creating a new user on the 'tb_users' table, i.e. inserting a row. 
+
+  DETAILS:
+
+
+  CHANGE HISTORY:
+  09-03-25: When a new row has been successfully added to 'tb_users', the rows on the 'tb_categories' table are copyied into a new table called 'tb_user_categories'. 
+            This will allow the user to keep their own record of categories and add / delete / edit them as they please without impacting on other users. 
+  
+  */
+
 	//Put user_id into session and check on each page to see if the user_id is legit.
 	session_start();
 
@@ -58,6 +74,22 @@
             if (!mysqli_query ($conn, $query)) {
               echo ("SQL Error: ") . $query . "<br>" . mysqli_error($conn);
             } else {
+
+              //New account has been created, now copy categories to user version.
+              $sql_copy_cat = "INSERT INTO `tb_user_categories` (`user_id`, `category_id`, `category_desc`) SELECT ?, category_id, category_desc FROM `tb_categories`";
+              $run_copy_cat = $conn->prepare($sql_copy_cat);
+
+              $run_copy_cat->bind_param("i", $user_id );
+
+              if ($run_copy_cat->execute()) {
+                  //echo ("Categories duplicated.");
+              } else {
+                  echo "Error duplicating categories (tb_user_categories)" . $run_copy_cat->error;
+              }
+
+              $run_copy_cat->close();
+
+
               //success, so redirect the user
               header("Location: login.php?account-created");
               die;            

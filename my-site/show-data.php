@@ -25,6 +25,10 @@
               Added new checkbox on the form. If ticked, it will hide 'mastered' words from the list. Unfortunately, the styles for the
               checkbox are in the head of this file and not in the .css file.
 
+    08-03-25: Changed SQL that was returning the list of categories in the drop-down menu. It is now populated by a function called 'populate_category_dropdown'.
+
+    09-03-25: Line 302, changed from POST method to GET method. This is to stop the warning - 'Confirm Form Resubmission' issue.
+
 
 -->
 
@@ -48,20 +52,8 @@
 
 
 <?php
-
-	//Get data from ct_categories, used to populate teh drop-down form. 
-	$sql = "SELECT * FROM `ct_categories`";
-	//$result = $conn->query($sql);
-	$result = mysqli_query($conn, $sql);
-
-	//Check for errors on sql query
-	if (!$result) {
-		echo "Error: " . mysqli_error($conn);
-	} elseif (mysqli_num_rows($result) > 0) {
-		//echo "Select successful, found " . mysqli_num_rows($result) . " rows.";
-	} else {
-		echo "There is a problem finding the list of categories.";
-	}
+    //Populate the array for the category drop-down menu
+    $result = populate_category_dropdown();
 ?>
 
 
@@ -208,9 +200,9 @@
   <div class="card">
     <!-- Dropdown to select category -->
     <div class="custom-select">
-      <form method="post">
+      <form method="GET">
         <label for="category-label" class="new-input-label">Choose a category. <span style="font-size: 10px;">(Leave blank to see all.)</span></label>
-          <select name="category" id="category" class="new-input-field">
+          <select name="category" id="category" class="new-input-field" autofocus>
             <option value="">-- Category --</option>    
               <?php
                   if ($result->num_rows > 0 ) {
@@ -292,8 +284,9 @@
 
   <?php
       //Get value from drop-down
-      if ($_SERVER["REQUEST_METHOD"] == "POST") {
-          $category_desc = $_POST['category'];
+      if ($_SERVER["REQUEST_METHOD"] == "GET") {
+          $category_desc = $_GET['category'];
+
       }
   ?>
 
@@ -321,11 +314,11 @@
           3. Page has been loaded, user has choosen a cateogry but not ticked the checkbox.
           4. Page has been loaded, user has choosen a category and ticked the checkbox.
         */
-        if (empty($category_desc) && (isset($_POST['hide']))) {
+        if (empty($category_desc) && (isset($_GET['hide']))) {
             $sql = "SELECT * FROM `tb_vocab`WHERE user_id='$user_id' and is_mastered='N' ORDER BY date DESC";
-          } elseif (empty($category_desc) && (!isset($_POST['hide']))) {
+          } elseif (empty($category_desc) && (!isset($_GET['hide']))) {
               $sql = "SELECT * FROM `tb_vocab`WHERE user_id='$user_id' ORDER BY date DESC";
-        } elseif (!empty($category_desc) && (isset($_POST['hide']))) {
+        } elseif (!empty($category_desc) && (isset($_GET['hide']))) {
             $sql = "SELECT * FROM `tb_vocab`WHERE user_id='$user_id' and category_desc='$category_desc' and is_mastered='N' ORDER BY date DESC";
             //Call function to count rows for a category.
             $category_count = count_records_by_category($category_desc);

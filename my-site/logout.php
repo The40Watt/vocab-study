@@ -12,6 +12,7 @@
 
     CHANGE HISTORY:
 
+    10-03-25:   Unsetting the variable 'session_tl' holding the users target language. 
 
 -->
 
@@ -23,6 +24,7 @@ if(isset($_SESSION['user_id']))
 {
     unset($_SESSION['user_id']);    //unsetting value.
     unset($_SESSION['session_word']);
+    unset($_SESSION['session_tl']);
 }
 
 header("Location: login.php");

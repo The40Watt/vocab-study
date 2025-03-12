@@ -45,6 +45,14 @@
                 Added 3 cross-site / cross-user trophies. 1) user with the most words, 2) user with the most tests 3) the first user to unlock all 14 badges. Trophy number
                 3 once unlocked, is held by that user indefinitely. The other 2 trophies can switch between users. The calculations for each are in 'badge-record-functions.php'.
 
+    08-03-25:   Added new button to 'Quick Menu' - 'user preferences'.
+
+    10-03-25:   Added new function call to find the users target language (find_users_tl). The result of this will be passed into the function to retrieve a random word from 
+                one of the foreign dictionaries. Small change to text of the 'Random' word section to show which lanuage is being used. This variable is a session variable and
+                is unset on logout.php.
+
+                Added some logic around the greeting for the user. Now that we know the users TL, we can call a function (get_user_greeting) to get different greetings.
+
 -->
 
 <?php
@@ -65,6 +73,8 @@
     $test_cnt = 0;
     $rand_word = '';
     $row_count = 0;
+    $user_tl = '';
+    $user_tl_upper = '';
 
     //Variable to define new user (no words on tbvocab)
     $new_user = '';
@@ -82,7 +92,11 @@
 
     //If the random word for the session has already been set, then skip this call.
     if (!isset($_SESSION['session_word'])) {
-        $_SESSION['session_word'] = find_session_word();
+
+        //Find users TL, pass it to function to get word of the day.
+        $user_tl = find_users_tl();
+        $_SESSION['session_tl'] = $user_tl;
+        $_SESSION['session_word'] = find_session_word($user_tl);
     }
 
 
@@ -386,7 +400,13 @@
             ?>
 
             <!--  This is the text a visitor will see if they have already used the site prevously. -->
-            <p style="text-align:left; padding-left:200px; width:80%;">Hello <b><?php echo $user_data['user_name']; ?></b>. Welcome back to Word <span class="high">Up</span>.</p>
+            <p style="text-align:left; padding-left:200px; width:80%;"> 
+                <?php 
+                    //Calling function to retreive a greeting in users TL
+                    echo $user_greeting = get_user_greeting($_SESSION['session_tl']);
+                ?>
+                
+            <b><?php echo $user_data['user_name']; ?></b>. Welcome back to Word <span class="high">Up</span>.</p>
             
         <p style="text-align:left; padding-left:200px; width:80%;">This is your Word <span class="high">Up</span> Dashboard, providing you with a quick overview of your activities and progress on the site. View your recent activities, your stats and achievements or use the quick menu to launch one of the activities.<br>At the bottom, you’ll see the ‘word of the day’. Do you know what today’s word means in your native language?<br>Have fun and continue learning, <i>one word at a time</i>. </p>
  
@@ -721,6 +741,8 @@
                     <button style="width:20%;" class="btn btn--secondary" name="TakeTestButton" type="submit">TAKE A TEST</button><p></p>
                     <p>&nbsp;&nbsp;&nbsp;</p>
                     <button style="width:20%;" class="btn btn--secondary" name="ViewBadgesButton" type="submit">VIEW BADGES</button><p></p>
+                    <p>&nbsp;&nbsp;&nbsp;</p>
+                    <button style="width:20%;" class="btn btn--secondary" name="ViewUserPreferences" type="submit">USER PREFERENCES</button><p></p>
                 </div>
             </form>
             </div>
@@ -735,7 +757,8 @@
             <h1>WORD OF DAY</h1>
             <!-- <p>Your random word is <strong><i> <?php echo $session_word ?> </i></strong>. </p> -->
             <blockquote>
-                <h3>Random word for you:</h3>
+                <?php $user_tl_upper = strtoupper($_SESSION['session_tl']); ?>
+                <h3>Random word (<?php echo $user_tl_upper ?>) for you:</h3>
                 <p style="padding-left:50px;"><strong><i> <?php echo $_SESSION['session_word']; ?> </i></strong></p>
                 <p>Do you know what it means?</p>
             </blockquote>

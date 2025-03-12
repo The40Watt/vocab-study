@@ -13,11 +13,13 @@
 
     CHANGE HISTORY:
 	
-	02-03-25: Added new column to insert SQL (is_mastered).
+	02-03-25:	 Added new column to insert SQL (is_mastered).
 
-	06-03-25: Added new code to cater for changes to how badges for word count are calculated. After a word is input,
-			  a count is done of words on tb_vocab. If it hits a milestone number, it will add a row to tb_badge_record
-			  if it doesn't exist. 
+	06-03-25:	Added new code to cater for changes to how badges for word count are calculated. After a word is input,
+				a count is done of words on tb_vocab. If it hits a milestone number, it will add a row to tb_badge_record
+				if it doesn't exist. 
+
+	08-03-25:	Changed SQL that was returning the list of categories in the drop-down menu. It is now populated by a function called 'populate_category_dropdown'. 
 
 -->
 
@@ -39,20 +41,8 @@
 ?>
 
 <?php
-
-	//Get data from ct_categories, used to populate teh drop-down form. 
-	$sql = "SELECT * FROM `ct_categories`";
-	//$result = $conn->query($sql);
-	$result = mysqli_query($conn, $sql);
-
-	//Check for errors on sql query
-	if (!$result) {
-		echo "Error: " . mysqli_error($conn);
-	} elseif (mysqli_num_rows($result) > 0) {
-		//echo "Select successful, found " . mysqli_num_rows($result) . " rows.";
-	} else {
-		echo "There is a problem finding the list of categories.";
-	}
+	//Populate the array to fill the category drop-down.
+	$result = populate_category_dropdown();
 ?>
 
 <?php
@@ -172,7 +162,7 @@ if(isset($_POST['SubmitButton']))
 					<form class="card-form" action="input.php" method="POST">
 						<div class="input">
 							<label class="new-input-label"></label>
-								<select id="category" class="new-input-field" name="category" required>
+								<select id="category" class="new-input-field" name="category" required autofocus>
 									<option value="">-- Category --</option>
 									<?php
 										if ($result->num_rows > 0 ) {

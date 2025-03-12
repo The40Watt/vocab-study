@@ -135,6 +135,72 @@
 
       <div class="faq">
         <button class="accordion">
+          ORGANISING MY WORDS?
+        <i class="fa-solid fa-circle-chevron-down"></i>
+        </button>
+        <div class="pannel">
+          <p>
+            When you start building your library of words, there will be 9 default categories available to chooose from. By using the 
+            options provided in the <strong>User Preferences</strong> page you will be able to create, edit and delete<span style="line-height:30px;vertical-align:middle" >*</span> categories as you
+            like. 
+          </p>
+          <p>&nbsp;</p>
+          <p>
+          <span style="line-height:30px;vertical-align:middle" >*</span>If you delete a category that has associated words, these words will then become 
+          orphaned, i.e. you can no longer filter them by category. This can be resolved by moving these words to a new category. This can be done in
+          the 'User Preferences' page.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="accordion">
+          TAKE YOUR LIBRARY WITH YOU?
+        <i class="fa-solid fa-circle-chevron-down"></i>
+        </button>
+        <div class="pannel">
+          <p>
+          Worried that you'll put time into building your library only for this site to disappear? Worry not. In the <i>'User Preferences'</i> page you will see an option to 
+          download all the words in your library. This will put your words into a <i>'.csv'</i> file, an industry standard format that will allow you to take your library with 
+          you for use in other applications if you wish.        
+         </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="accordion">
+          I HAVE NEW ICONS ON MY DASHBOARD?
+        <i class="fa-solid fa-circle-chevron-down"></i>
+        </button>
+        <div class="pannel">
+          <p>
+            Firstly, congratulations. These icons denote users who have achieved a specific achievement among all users of the site. There is an award for the 
+            user with the most words in their library and an award for the user with the most completed tests. The third award is the most unique in that it 
+            can only be awarded to one user. Ever. The first user to unlock all the <strong>Badges</strong> will unlock this unique achievement.
+          </p>
+          <p>&nbsp;<p>
+          <p><i class="fa-solid fa-ranking-star fa-2xs" style="color:rgb(6, 6, 6);"></i>  | The user with most words.</p>
+          <p><i class="fa-solid fa-medal fa-2xs" style="color:rgb(6, 6, 6);"></i> | The user with most completed tests.</p>
+          <p><i class="fa-solid fa-trophy fa-2xs" style="color:rgb(6, 6, 6);"></i>  | The user to complete all badges first.</p>
+
+          </div>
+      </div>
+
+      <div class="faq">
+        <button class="accordion">
+          WHY SET A TARGET LANGUAGE?
+        <i class="fa-solid fa-circle-chevron-down"></i>
+        </button>
+        <div class="pannel">
+          <p>
+            In the <strong>User Preferences</strong> section, you have the option to set a <i>Target Language</i>. By doing so, you will be able to get a new random word 
+            in your target language every time you log in.  
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="accordion">
           KO-FI?
         <i class="fa-solid fa-circle-chevron-down"></i>
         </button>
@@ -165,13 +231,13 @@
         </button>
         <div class="pannel">
           <p>
-            There are nine badges in total to earn, some of which are more obvious than others. If you want to know how to earn each of the badges,
+            There are 14 badges in total to earn, some of which are more obvious than others. If you want to know how to earn each of the badges,
             keep on reading.
         </p>
         <p>&nbsp;</p>
         <p>
             <ol>
-                <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">The description is fairly sefl-explanatory and if you are seeing this page, then you've alredy created your account, thus earning the badge. Well done.</span></li>
+                <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">The description is fairly self-explanatory and if you are seeing this page, then you've alredy created your account, thus earning the badge. Well done.</span></li>
                 <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Input your first word to your library for this badge.</span></li>
                 <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">When you input a word, you need to select a 'category' to save the word under. Save a word under each category and you'll have earned this badge.</span></li>
                 <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">After you start your first test, you will earn this badge. Simple.</span></li>
@@ -179,7 +245,12 @@
                 <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Add 100 words to your library for this one.</span></li>
                 <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Add 250 words to your library for this one.</span></li>
                 <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Add 1,000 words to your library for this one.</span></li>
-                <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Use the contact form to submit a message, to earn the final badge.</span></li>
+                <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Use the contact form to submit a message.</span></li>
+                <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Use the mastery functionality to mark your first word as mastered.</span></li>
+                <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Use the mastery function to mark 25 words as mastered.</span></li>
+                <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Use the mastery function to mark 100 words as mastered.</span></li>
+                <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Use the mastery function to mark 250 words as mastered.</span></li>
+                <li style="color: rgba(0, 0, 0, 0.7); line-height=1.4; font-size=1.2rem; "><span style="color: black; background: black; span:hover { color: white}">Earn all the other badges to unlock this final badge. Superstar!</span></li>
             </ol>
           </p>
         </div>

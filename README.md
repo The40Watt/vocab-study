@@ -22,6 +22,11 @@ I have several new features planned once the website is active.
 Just myself.
 
 ## Version History
++ 0.9.1.4
+    + Update to index.php to make 'User Preferences' available 
+    + 'User Preferences' allows user to add / edit / delete categories
+    + Allow users to set their target language 
+
 + 0.9.1.3
     + Update of index.php to add new stats and graphs
     + Added ability for user to save test results
