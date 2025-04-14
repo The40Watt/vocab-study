@@ -22,6 +22,14 @@ I have several new features planned once the website is active.
 Just myself.
 
 ## Version History
++ 0.9.1.5
+    + This version of the code is the one that went live on 5th April.
+    + It contains a new function, 'Practice' which displays word cards that can be flipped to help memorisation.
+    + The badge images have been reworked.
+    + The Dashboard has had several visual and functional improvements.
+    + Dashboard has multiple tabs now that can be locked behind a paywall.
+    + More 'User Preference' options. 
+      
 + 0.9.1.4
     + Update to index.php to make 'User Preferences' available 
     + 'User Preferences' allows user to add / edit / delete categories
