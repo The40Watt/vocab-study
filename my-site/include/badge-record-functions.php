@@ -118,7 +118,36 @@ function calc_overall_badge_completion() {
     return intval($badges_complete);
 }
 
+/***
+ * 
+ */
+function find_current_badge_count() {
 
+    include("include/connection.php");
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+
+    //Declare variable
+    $badges_complete = 0;
+    $tot_available_badges = 14;
+
+    //Check how many rows on table for current user..
+    $sql_check_row = "SELECT COUNT(*) AS count FROM `tb_badge_record` WHERE user_id = ?";
+    $run_check_row = $conn->prepare($sql_check_row);
+
+    $run_check_row->bind_param("i", $user_id);
+    $run_check_row->execute();
+
+    $run_check_row_result = $run_check_row->get_result();
+    $row = $run_check_row_result->fetch_assoc();
+
+    $badges_complete = $row['count'];
+
+    $badges_complete++; //Add 1 to count because user must have earned the 1st badge when creating account.
+
+    return $badges_complete;
+}
 
 /*
 
@@ -245,6 +274,11 @@ function check_badge_record($mastered_badge_num) {
     1. Will do a count on tb_vocab to see if user has used all 9 original categories.
     2. If they have, check that this achievement is recorded on tb_badge_record (#3)
     3. If not, add a row. 
+
+    CHANGE HISTORY:
+
+    04-04-25:   Live fix. Changing logic to see if count of categories is equal to or greater than 9 rather than just equal to. In testing, if you don't visit the badges 
+                page while the count is exactly 9, this badge is never awarded.
 */
 function count_categories_for_badge($badge_number) {
 
@@ -273,7 +307,7 @@ function count_categories_for_badge($badge_number) {
     //Check if number of categories is 9, if so user has used all original categories. So next, check if this has been added to tb_badge_record table
     //and if not, add it.
 
-    if ($num_categories == 9) {
+    if ($num_categories >= 9) {
 
         //Count how many rows user has on tb_badge_record for the current badge number.
         $sql_check_row = "SELECT COUNT(*) AS count FROM `tb_badge_record` WHERE user_id = ? AND badge_num = ?";
@@ -375,6 +409,11 @@ function did_reach_out($badge_number)
 /*
     Function to check if the user has started a test. 
     Check tb_vocab for user where test_count is greater than 0.
+
+    Change History:
+
+    13-03-25:   Changed the logic to decide who a test is recorded. Now checking 'tb_tests' as that means a user has completed
+                a test. This is rather than 'tb_vocab' where it just indicated a word was selected for testing.
 */
 function check_user_has_tested($badge_number) {
 
@@ -387,7 +426,7 @@ function check_user_has_tested($badge_number) {
     $date_first_test = null;
 
     //Prepare SQL and execute
-    $sql = "SELECT * FROM tb_vocab WHERE user_id='$user_id' AND test_count > 0";
+    $sql = "SELECT * FROM tb_tests WHERE user_id='$user_id'";
     $run = mysqli_query($conn, $sql);
 
     //Number of rows found with test_count greater than 0 on tb_vocab
@@ -740,6 +779,11 @@ function am_i_user_with_most_words() {
 /*
     This is the second cross-user stat.
     Find the user with the most rows on tb_test_record.
+
+
+    Change History: 
+
+    13-03-25:   This stat is now derived from 'tb_tests', not 'tb_test_record'.
 */
 function am_i_user_with_most_tests() {
 
@@ -750,7 +794,7 @@ function am_i_user_with_most_tests() {
     $site_tests_leader = 'N';
 
     //Select row from tb_badge_record
-    $sql_most_tests = "SELECT user_id, count(*) AS num_tests FROM tb_test_record GROUP BY user_id ORDER BY num_tests DESC LIMIT 1;";
+    $sql_most_tests = "SELECT user_id, count(*) AS num_tests FROM tb_tests GROUP BY user_id ORDER BY num_tests DESC LIMIT 1;";
 
     $run_most_tests = $conn->prepare($sql_most_tests);
 

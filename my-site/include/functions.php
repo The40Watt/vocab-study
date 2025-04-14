@@ -27,7 +27,11 @@ function check_login($conn)
    die;
 }
 
-// full code at timestamp 31:25
+/***
+ * CHANGE HISTORY: 
+ * 
+ * 07-04-25: Change to try ensure code created is minimum 5 digits.
+ */
 function random_num($length)
 {
     $text = "";
@@ -38,7 +42,7 @@ function random_num($length)
         $length = 5; 
     }
 
-    $len = rand(4, $length);
+    $len = rand(5, $length); //now 5, not 4
 
     for ($i=0; $i < $len; $i++) {
         
@@ -75,6 +79,9 @@ function next_word($word) {
     $user_id = $_SESSION['user_id'];
     $next_word = '';
 
+    //Trying to enforce UTF-8
+	$conn->set_charset("utf8mb4");
+
     //PHP code to select next word to be tested
     $sql = "SELECT * FROM `tb_vocab` WHERE user_id='$user_id' ORDER BY test_count ASC, date DESC LIMIT 1";
     $run = mysqli_query($conn, $sql);
@@ -87,6 +94,9 @@ function next_word($word) {
     return $next_word;
 }
 
+/**
+ *  This function is used to sum up the value in test_count on 'tb_vocab'. That will give you the total number of words tests. 
+ */
 function number_of_tests($test_cnt) {
 
     include("include/connection.php");
@@ -188,7 +198,7 @@ function date_of_signup()
     Function to check for new rows on tb_messages. 
     If so, it will be highlighted to admin users on the main page. 
 */
-function check_messages($message_alert) {
+function check_messages() {
 
     //Open DB connection
     include("include/connection.php");
@@ -303,7 +313,11 @@ function date_last_category() {
 
 
 /* 
-    This function will retrieve the last five words the user has entered. 
+    This function will retrieve the last five words the user has entered.
+    
+    CHANGE HISTORY
+
+    04-04-25: Live fix. Adding line of code to force UTF-8.
 */
 function last_five_words() {
     include("include/connection.php");
@@ -312,9 +326,11 @@ function last_five_words() {
     $user_id = $_SESSION['user_id'];
     $user_no_words = 'Y';
 
+    //Trying to enforce UTF-8
+	$conn->set_charset("utf8mb4");
 
     //PHP code to select last five words created
-    $sql = "SELECT fr_text FROM `tb_vocab` WHERE user_id='$user_id' ORDER BY date DESC  LIMIT 5";
+    $sql = "SELECT fr_text FROM `tb_vocab` WHERE user_id='$user_id' ORDER BY id DESC  LIMIT 5";
     $run = mysqli_query($conn, $sql);
 
 
@@ -333,6 +349,10 @@ function last_five_words() {
 /*
     This function will retrive the last 5 words marked as mastered from tb_vocab.
     It is called from 'index.php'
+
+    CHANGE HISTORY
+
+    04-04-25: Live fix. Adding line of code to force UTF-8.
 */
 function last_five_mastered() {
 
@@ -341,6 +361,9 @@ function last_five_mastered() {
     //set user_id so we can only see which words the logged in user has entered.
     $user_id = $_SESSION['user_id'];
     
+    //Trying to enforce UTF-8
+	$conn->set_charset("utf8mb4");
+
     //PHP code to select last five words to be mastered.
     $sql = "SELECT fr_text FROM `tb_vocab` WHERE user_id='$user_id' AND is_mastered='Y' ORDER BY date_mastered DESC  LIMIT 5";
     $run = mysqli_query($conn, $sql);
@@ -430,6 +453,11 @@ function calc_percentage_not_tested($num1, $num2) {
 
 /*
     Function to count the number of words a user has that has a test_count of zero.
+
+    CHANGE HISTORY:
+
+    15-03-25:   Changed echo message to be more clear. SQL is working fine but user just has no words on 'tb_vocab'
+                with a test_count of zero. It is not an error condition. 
 */
 function number_not_tested() {
 
@@ -453,7 +481,7 @@ function number_not_tested() {
         $not_tested_cnt = mysqli_num_rows($run);
 
     } else {
-        echo "There is a problem words for user.";
+        //echo "SQL executed correctly but user has no words with test_count of zero. Not an error condition.";
     }
 
     return $not_tested_cnt;
@@ -546,6 +574,10 @@ function count_categories($category_count) {
 /*
     Called from 'index.php'
     It will retrive from 'tb_test_record' the users most tested category. 
+
+    Change History: 
+
+    13-03-25:   This stat is now derived from 'tb_tests', not 'tb_test_record'.
 */
 function find_most_test_category() {
 
@@ -557,12 +589,16 @@ function find_most_test_category() {
 
     $most_used_category = '';
 
+
+    //Trying to enforce UTF-8
+	$conn->set_charset("utf8mb4");
+
     //Select row from tb_badge_record
     $sql_cat_count = "SELECT
                             category_desc,
                         COUNT(category_desc) AS `value_occurrence` 
                         FROM
-                            `tb_test_record` WHERE user_id=?
+                            `tb_tests` WHERE user_id=?
                         GROUP BY 
                             category_desc
                         ORDER BY 
@@ -593,6 +629,10 @@ function find_most_test_category() {
 /*
     Called from 'index.php'
     It will retrive from 'tb_test_record' the users last test score. 
+
+    Change History: 
+
+    13-03-25:   This stat is now derived from 'tb_tests', not 'tb_test_record'.
 */
 function get_last_test_score() {
 
@@ -605,7 +645,7 @@ function get_last_test_score() {
     $last_test_score = 0;
 
     //Select row from tb_badge_record
-    $sql_last_score = "SELECT * FROM `tb_test_record` WHERE user_id=? ORDER BY test_date DESC LIMIT 1;";
+    $sql_last_score = "SELECT * FROM `tb_tests` WHERE user_id=? ORDER BY test_date DESC LIMIT 1;";
 
     $run_last_score = $conn->prepare($sql_last_score);
 
@@ -625,10 +665,7 @@ function get_last_test_score() {
         $last_test_score = $row['test_score'];
     }
 
-
-
     return $last_test_score;
-
 
 }
 
@@ -646,6 +683,9 @@ function populate_category_dropdown() {
 
     //Get data from ct_categories, used to populate teh drop-down form. SQL has a union with 'tb_user_category' to get user created categories. 
     //$sql = "SELECT category_desc, id from `ct_categories` UNION SELECT category_desc, id FROM `tb_user_category` WHERE user_id='$user_id' ORDER BY category_desc ASC";
+
+    //Trying to enforce UTF-8
+    $conn->set_charset("utf8mb4");
 
     $sql = "SELECT category_desc, id FROM `tb_user_categories` WHERE user_id='$user_id' ORDER BY category_desc ASC";
     $result = mysqli_query($conn, $sql);
@@ -757,6 +797,44 @@ function find_users_tl() {
 
 }
 
+/*
+    This is a function to find the is_premium value on 'tb_user'. 
+*/
+function is_user_premium() {
+
+    //Open DB connection
+    include("include/connection.php");
+    
+    //Access user_id.
+    $user_id = $_SESSION['user_id'];
+
+    //Declare variable
+    $is_premium = '';
+
+    $sql_find_prem = "SELECT is_premium FROM `tb_users` WHERE user_id='$user_id'";
+
+    $run_find_prem = $conn->prepare($sql_find_prem);
+
+    $run_find_prem->execute();
+
+    if($run_find_prem) {
+        $run_find_prem_result = $run_find_prem->get_result();
+        $row = $run_find_prem_result->fetch_assoc();
+
+        //Get value
+        $is_premium = $row['is_premium'];
+
+        $conn->close();
+        $run_find_prem->close();
+
+        return $is_premium;
+    } else {
+        echo ("Error finding target language. ");
+    }
+
+}
+
+
 
 /*
     Function to return a greeting in the users target language.
@@ -781,3 +859,124 @@ function get_user_greeting($lang_code) {
         return $greetings_array[$lang_code] ?? $greetings_array['en'];
 
 }
+
+
+
+/**
+ * 
+ */
+function find_cloud_words() {
+
+    include("include/connection.php");
+    include_once("include/constants.php");
+
+
+
+
+    //set user_id so we can only see which words the logged in user has entered.
+    $user_id = $_SESSION['user_id'];
+
+    //Set variables
+    // $max_score = HIGHSCORE;
+    // $occurence = 1;
+    // $mastered = NO;
+
+    // $sql = "SELECT tw.word, tw.vocab_id
+    //         FROM tb_test_words tw
+    //         JOIN tb_vocab v ON tw.vocab_id = v.id
+    //         WHERE tw.score >= ?
+    //         AND v.is_mastered = ?
+    //         AND v.user_id=?
+    //         GROUP BY tw.vocab_id, tw.word
+    //         HAVING COUNT(tw.vocab_id) > ?;";
+	
+    
+    //Trying to enforce UTF-8
+	$conn->set_charset("utf8mb4");
+
+    $sql = "SELECT fr_text from `tb_vocab` WHERE user_id=? ORDER BY RAND() LIMIT 30";
+
+   /* 
+   CHANGING THIS SQL AS IT DOESN'T WORK WHEN ADDING IN CHECK FOR A MASTERED WORD
+    $sql = "SELECT tb_tests.user_id, 
+                    tb_tests.test_id, 
+                    tb_tests.category_desc, 
+                    tb_test_words.word, 
+                    tb_test_words.score, 
+                    tb_test_words.vocab_id
+            FROM tb_tests
+            INNER JOIN tb_test_words ON tb_tests.test_id = tb_test_words.test_id
+            WHERE tb_tests.user_id = ? 
+            AND tb_test_words.score = ?
+            GROUP BY tb_test_words.vocab_id
+            HAVING COUNT(tb_test_words.vocab_id) > ?";
+    */
+    //Prepare the statement
+    $run_sql = $conn->prepare($sql);
+    $run_sql->bind_param("i", $user_id );
+
+    if(!$run_sql->execute()) {
+        echo ("Error finding words for cloud: ") . $run_sql->error;
+    }
+
+    $result = $run_sql->get_result();
+
+    //initialise array
+    $word_array = [];
+
+    //if it finds at least 1 row, get the details.
+    if ($result->num_rows > 0) {
+
+        //loop through and add to array.
+        while ($row = $result->fetch_assoc()) {
+            $word_array[] = $row;
+        }
+    }
+
+    //Close connections
+    $run_sql->close();
+    $conn->close();
+
+    return $word_array;
+
+
+}
+
+
+/*
+    Allowing users to chose between tests being case sensitive or case in-sensitive. 
+*/
+function check_case_sensitivity() {
+
+    //Open DB connection
+    include("include/connection.php");
+    
+    //Access user_id.
+    $user_id = $_SESSION['user_id'];
+
+    //Declare variable
+    $case_sensitive = '';
+
+    $sql_find_sens = "SELECT is_case_sensitive FROM `tb_user_pref` WHERE user_id='$user_id'";
+
+    $run_find_sens = $conn->prepare($sql_find_sens);
+
+    $run_find_sens->execute();
+
+    if($run_find_sens) {
+        $run_find_sens_result = $run_find_sens->get_result();
+        $row = $run_find_sens_result->fetch_assoc();
+
+        //Get value
+        $case_sensitive = $row['is_case_sensitive'];
+
+        $conn->close();
+        $run_find_sens->close();
+
+        return $case_sensitive;
+    } else {
+        echo ("Error finding case sensitivity value. ");
+    }
+
+}
+
