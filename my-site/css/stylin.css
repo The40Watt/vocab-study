@@ -21,8 +21,15 @@
     --backgroundcolour: #fff;
     --text-light: #585858;
     --border: #898EA4;
-    --accent: #0d47a1;
+    --accent: #e9a022;
     --accent-bg: #f5f7ff;
+
+    --primary: #FFCE00;
+    --secondary: #e8940c;
+    --dark: #212121;
+    --light: #F3F3F3;
+    --front-primary: #62c3ec;
+    --front-secondary: #2169f8;
 
 
 
@@ -34,7 +41,7 @@
 
 html {
     /* Set the font globally */
-    font-family: var(--googlefont);
+    font-family: var(--googleMontserrat);
     scroll-behavior: smooth;
   }
 
@@ -46,7 +53,7 @@ body {
     font-size: 1.15rem;
     line-height: 1.5;
     display: grid;
-    grid-template-columns: 1fr min(45rem, 90%) 1fr;
+    grid-template-columns: 1fr min(55rem, 90%) 1fr;
     margin: 0;
     min-height: 100vh;
     flex-direction: column;
@@ -136,6 +143,7 @@ textarea {
     box-shadow:  0 0 0 0 var(--btn-color);
   }
   
+  /*
   .btn:focus-visible {
     outline: 0;
     --btn-color: #002cc8;
@@ -149,6 +157,7 @@ textarea {
     content: "\21E7";
     animation: float .5s ease-in-out infinite;
   }
+*/
   
   @keyframes float {
       0% {
@@ -246,15 +255,14 @@ textarea {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	max-width: 425px;
+	max-width: 625px;
 	background-color: #fff;
 	border-radius: 10px;
-	/*box-shadow: 20px 10px 20px 20px rgba(#0e0000, .25);*/
-    /*box-shadow: 2px 1px 2px 1px #d9d7d7; /* horizontal, vertical, blur, spread blur */ 
-    box-shadow: 5px 5px 0 0 #444;
-
+    box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); 
 	padding: .75rem;
 }
+
+
 
 
 .card-heading {
@@ -545,7 +553,7 @@ blockquote {
 
 /* START BADGE STYLES */
 .product{
-    box-shadow: 10px 10px 10px rgba(0,0,0,0.3);
+    box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); 
     border-radius: 20px; /* This will round edges. */
 
 }
@@ -554,19 +562,19 @@ blockquote {
     display: grid;
     grid-template-columns: auto auto auto;
     gap: 30px;
-    font-family: var(--googlefont);
+    font-family: var(--googleMontserrat);
 }
 
 .product img{
     width: 100%;
-    border-top-right-radius: 20px; /* rounding corners */
+    border-top-right-radius: 20px; 
     border-top-left-radius: 20px; 
 }
 
 .product_desc {
     text-align: center;
     padding: 20px 0px; /*increase space around caption */
-    font-family: var(--googlefont);
+    font-family: var(--googleMontserrat);
 }
   /* END OF BADGE STYLES */
 
@@ -576,7 +584,7 @@ blockquote {
 
 .hoverTable tr:hover {
     /*background-color:rgb(99, 183, 134);*/
-    outline: 2px solid #444;
+    outline: 1px groove #444;
     outline-offset: -2px;
     font-size: 18px;
 }
@@ -593,10 +601,12 @@ blockquote {
 table {
     border-collapse: collapse;
     /*font-family: Tahoma, Geneva, sans-serif;*/
-    font-family: var(--googlefont);
+    font-family: var(--googleMontserrat);
     width: 100%;
-    box-shadow: 10px 10px 10px rgba(0,0,0,0.3);
-    border: 2px solid black;
+    /* box-shadow: 10px 10px 10px rgba(0,0,0,0.3); */
+    border: 1px solid #999898;
+    box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); 
+
   }
   table td {
     padding: 15px;
@@ -710,19 +720,26 @@ button:hover{
 /* START OF DETAILS STYLES*/
 
 details {
-    background-color: rgb(176, 240, 207);
-    border: 1px solid black;
+    /* background-color: rgb(176, 240, 207); */
     border-radius: 12px;
     margin-bottom: 1rem;
-    box-shadow: 5px 5px 0 0 var(--btn-color);
+        /* box-shadow: 5px 5px 0 0 var(--btn-color);
 
-    
-  }
+        color: #223542;
+        font-family: var(--googleMontserrat), var(--googlefont), var(--sans-font);
+        font-weight: 500;
+        text-transform: uppercase; */
+    box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); 
 
-  details {
     padding: 0.7rem 1rem;
-    box-shadow: 5px 5px 0 0 #444;
-
+    --btn-color: #999898;
+    --btn-bg: #fafafae6;
+    border: 1px solid var(--btn-color);
+    font-family: var(--googleMontserrat);
+    background-color: #FBAB7E;
+    background-image: linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%);
+    
+    
   }
 
 /* END OF DETAILS STYLES*/
@@ -736,7 +753,7 @@ details {
 	margin-bottom: 2px;
 	text-align: left;
     color: #37596f;
-    font-family: var(--googlefont);
+    font-family: var(--googleMontserrat);
     font-weight: 700;
     padding-top:10px;
 }
@@ -823,3 +840,504 @@ details {
 }
 
 /* TOGGLE STYLES END */
+
+
+
+/* ######### START ALTERNATE STYLE ########## */
+
+.alternate-button-wrap {
+    /* height: 100%; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 20px;
+}
+
+
+.alternate-button {
+    width: 340px;
+    height: 55px;
+    font-family: var(--googleMontserrat), var(--googlefont);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: 1px groove #999898;
+    border-radius: 45px;
+    box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); 
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+    margin-top: 5px;
+}
+
+/* Hover effect for desktop only. */
+@media (hover: hover) {
+    .alternate-button:hover {
+        background-color: #2EE59D;
+        box-shadow: 5.9px 11.8px 11.8px hsla(112, 84%, 62%, 0.32); 
+        color: #fff;
+        transform: translateY(-5px);
+        border: none;
+    }
+}
+
+/* Active effect (for mobile tap) */
+.alternate-button:active {
+    background-color: #2EE59D;
+    box-shadow: 5.9px 11.8px 11.8px hsla(112, 84%, 62%, 0.32); 
+    color: #fff;
+    transform: translateY(-3px); /* Slight movement */
+    border: none;
+}
+
+
+
+.alternate-button-cancel {
+    width: 340px;
+    height: 55px;
+    font-family: var(--googleMontserrat), var(--googlefont);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: 1px groove #999898;
+    border-radius: 45px;
+    box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); 
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+    margin-top: 5px;
+}
+
+
+/* Active effect (for mobile tap) */
+.alternate-button-cancel:active {
+    background-color: #d16666;
+    box-shadow: 5.9px 11.8px 11.8px hsla(11, 74%, 40%, 0.32); 
+    color: #fff;
+    transform: translateY(-5px);
+    border: none;
+}
+
+/* Hover effect for desktop only. */
+@media (hover: hover) {
+    .alternate-button-cancel:hover {
+        background-color: #d16666;
+        box-shadow: 5.9px 11.8px 11.8px hsla(11, 74%, 40%, 0.32); 
+        color: #fff;
+        transform: translateY(-5px);
+        border: none;
+    }
+}
+
+
+.card-form {
+	padding: 0rem 1rem 1rem 1rem;
+}
+
+.alternate-input {
+	display: flex;
+	flex-direction: column-reverse;
+	position: relative;
+	padding-top: 1.0rem;
+	&+.input {
+		margin-top: 1.5rem;
+	}
+}
+
+
+
+.alternate-input-field {
+    width:100%;
+    padding: 12px 12px; /*where text appears in box. First value puts padding top/bottom. Second value puts padding left/right.*/
+    border-radius: 12px; /*rounding corners*/
+    font-family: var(--googleMontserrat), var(--googlefont), var(--sans-font);
+    --btn-color: #999898;
+    --btn-bg: #fafafae6;
+    border: 2px solid var(--btn-color);
+    font-weight: 500;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none; 
+}
+
+
+input[type=text]:focus {
+    border-radius: 20px;
+    border: 2px solid #2EE59D;
+    box-shadow: 1.7px 3.4px 3.4px hsla(112, 84%, 62%, 0.32); 
+}
+
+input[type=number]:focus {
+    border-radius: 20px;
+    border: 2px solid #2EE59D;
+    box-shadow: 1.7px 3.4px 3.4px hsla(112, 84%, 62%, 0.32); 
+}
+
+input[type=email]:focus {
+    border-radius: 20px;
+    border: 2px solid #2EE59D;
+    box-shadow: 1.7px 3.4px 3.4px hsla(112, 84%, 62%, 0.32); 
+}
+
+input[type=password]:focus {
+    border-radius: 20px;
+    border: 2px solid #2EE59D;
+    box-shadow: 1.7px 3.4px 3.4px hsla(112, 84%, 62%, 0.32); 
+}
+
+textarea:focus {
+    border-radius: 20px;
+    border: 2px solid #2EE59D;
+    box-shadow: 1.7px 3.4px 3.4px hsla(112, 84%, 62%, 0.32);   
+}
+
+
+.alternate-input-field select:focus {
+    border-radius: 20px;
+    border: 2px solid #2EE59D;
+    box-shadow: 1.7px 3.4px 3.4px hsla(112, 84%, 62%, 0.32); 
+}
+
+
+.alternate-input-label {
+	color: #223542;
+    font-family: var(--googleMontserrat), var(--googlefont), var(--sans-font);
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .alternate-input-label {
+       font-size: 1.7rem;
+    }
+    
+}
+
+@media (max-width: 480px) {
+    .alternate-input-label {
+       font-size: 1.5rem;
+    }
+}
+
+/* END ALTERNATE STYLE */
+
+
+/* START OF STYLES FOR CHECKBOX - SHOWDATA.PHP */
+
+.cb-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #223542;
+    font-family: var(--googleMontserrat), var(--googlefont), var(--sans-font);
+    font-weight: 500;
+    text-transform: uppercase;
+  
+  }
+  
+  /* Hide the browser's default checkbox */
+  .cb-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    /* box-shadow: 2px 2px 0 0 black; */
+    box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); 
+    --btn-color: #999898;
+      --btn-bg: #fafafae6;
+      border: 1px solid var(--btn-color);
+  
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .cb-container:hover input ~ .checkmark {
+    background-color: #cceed4;
+    border: 1px solid #2EE59D;
+    box-shadow: 1.7px 3.4px 3.4px hsla(112, 84%, 62%, 0.32); 
+  
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .cb-container input:checked ~ .checkmark {
+    /* background-color: #2196F3; */
+    background-color: #2EE59D;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .cb-container input:checked ~ .checkmark:after {
+    display: block;
+  
+  }
+  
+  /* Style the checkmark/indicator */
+  .cb-container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  
+  }
+
+  /* END OF CHECKBOX STYLES */
+
+
+  .master-switch {
+    position: relative;
+    display: inline-block;
+  }
+
+  .master-switch-input {
+    display: none;
+  }
+
+  .master-switch-label {
+    display: block;
+    font-family: var(--googleMontserrat);
+    width: 48px;
+    height: 24px;
+    /* text-indent: -150%; */
+    /* clip: rect(0 0 0 0); */
+    user-select: none;
+
+    color: #223542;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+.switch-sudo-label {
+    color: #223542;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-family: var(--googleMontserrat);
+}
+
+.master-switch-label::before,
+.master-switch-label::after {
+    content: "";
+    display: block;
+    position: absolute;
+    cursor: pointer;
+}
+
+.master-switch-label::before {
+    width: 100%;
+    height: 100%;
+    /* background-color: #dedede; */
+    background-color: #d16666;
+
+    border-radius: 9999em;
+    -webkit-transition: background-color 0.25s ease;
+    transition: background-color 0.25s ease;
+}
+.master-switch-label::after {
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #fff;
+  /* box-shadow: 0 0 2px rgba(0, 0, 0, 0.45); */
+  box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); 
+
+  -webkit-transition: left 0.25s ease;
+  transition: left 0.25s ease;
+}
+.master-switch-input:checked + .master-switch-label::before {
+  /* background-color: #89c12d; */
+  background-color: #2EE59D;
+}
+.master-switch-input:checked + .master-switch-label::after {
+  left: 24px;
+}
+
+/* STYLES FOR USE ON NEW PAGE HEADINGS */
+.main-section{
+    text-align: center;
+    margin-top: 70px;
+    line-height: 2;
+    font-family: var(--googleMontserrat);
+    border: 0px solid red;
+}
+
+.page-title h1{
+    font-size: 4rem;
+    line-height: 1;
+    font-family: var(--googleMontserrat);
+    font-weight: 400;
+}
+
+ .page-title h3{
+    font-size: 1.5rem;
+    line-height: 1;
+    font-family: var(--googleMontserrat);
+}
+
+.page-title h4{
+    font-size: 1.5rem;
+    line-height: 1;
+    font-family: var(--googleMontserrat);
+    font-weight: 400;
+}
+
+/* 🌍 Responsive Design */
+@media screen and (max-width: 768px) {
+    .page-title h1 {
+        font-size: 1.7rem; /* Reduce font size for smaller screens */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .page-title h1 {
+        font-size: 1.5rem;
+    }
+}
+
+
+
+/*START OF FLIP CARD STYLES */
+.flipcontainer {
+    width: 350px;
+    height: 500px;
+    perspective: 800px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border: 0px solid red;
+
+  }
+  
+  /* .flipcontainer:hover > .flipcard {
+    cursor: pointer;
+    transform: rotateY(180deg);
+  } */
+
+
+  /* Active effect (for mobile tap) */
+/* .flipcontainer:active > .flipcard {
+    cursor: pointer;
+    transform: rotateY(180deg);
+} */
+
+
+/* THIS is the important bit: when container has class 'flipped' */
+.flipcontainer.flipped .flipcard {
+    transform: rotateY(180deg);
+    cursor: pointer;
+}
+
+  
+  .flipcard {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    transition: transform 1500ms;
+    transform-style: preserve-3d;
+  }
+  
+  .front,
+  .back {
+    height: 100%;
+    width: 100%;
+    border-radius: 2rem;
+    box-shadow: 0 0 5px 2px rgba(50, 50, 50, 0.25);
+    position: absolute;
+    backface-visibility: hidden;
+    background-image: linear-gradient(to bottom right, var(--primary), var(--secondary));
+  }
+  
+  .front {
+    background-image: linear-gradient(to bottom right, var(--front-primary), var(--front-secondary));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.15rem;
+    font-weight: 600;
+    gap: 5rem;
+    color:white;
+  }
+  
+  .back {
+    background-color: #3a3a3a;
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.15rem;
+    font-weight: 600;
+    gap: 5rem;
+    color:white;
+  }
+
+
+
+
+  .practice-outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Space between rows */
+    border: opx solid blue;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    justify-content: center;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .alternate-button-wrap {
+        display: flex;
+        flex-direction: column;
+    }
+    
+}
+
+@media (max-width: 480px) {
+    .alternate-button-wrap {
+        display: flex;
+        flex-direction: column;
+    }
+}

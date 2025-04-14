@@ -24,8 +24,12 @@ function find_session_word($lang_code) {
         $dictionary = 'spanish.txt';
     } elseif ($lang_code == "es") {
         $dictionary = 'portuguese.txt';
+    } elseif ($lang_code == 'de') {
+        $dictionary = 'german.txt';
+    } elseif ($lang_code == 'it') {
+        $dictionary = 'italian.txt';
     } else {
-        $dictionary = 'default.txt';
+        $dictionary = 'french.txt';
     }
 
   
@@ -45,7 +49,27 @@ function find_session_word($lang_code) {
     return $data;
 
     
+/**
+ * Code below for stripping unwanted chars
+ */
 
+
+//  $inputfile = "dictionary/dutch.txt";
+//  $outputfile = "dictionary/dutch-output.txt";
+
+// $lines = file($inputfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+// if ($lines === false) {
+//  die("Error 1");
+// }
+
+// $modifiedLines = [];
+// foreach($lines as $line) {
+//  $modifiedLine = preg_replace('/\/.*/', '', $line);
+//  $modifiedLines[] = $modifiedLine;
+// }
+
+// file_put_contents($outputfile, implode("\n", $modifiedLines));
 
   
 }

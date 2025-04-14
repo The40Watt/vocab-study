@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *  CHANGE HISTORY:
+ * 
+ *  15-03-25:   Changed status from BETA to ALPHA. More accurate.
+ */
+
 function aria_current($url) {
     // If $url is an exact match for the current URL, return 'aria-current="page"'.
     if ($_SERVER['REQUEST_URI'] === $url) {
@@ -24,14 +30,15 @@ function aria_current($url) {
     <ul>
         <li class="list__item"><a href="/my-site/">Home</a></li>
         <li class="list__item"><a href="/my-site/input.php"<?php aria_current('/input.php') ?>>Add a Word</a></li>
-        <li class="list__item"><a href="/my-site/show-data.php">Your Words</a></li>
+        <li class="list__item"><a href="/my-site/practice-words.php">Practice</a></li>
+        <li class="list__item"><a href="/my-site/show-data.php">Manage Words</a></li>
        <!-- <li class="list__item"><a href="/my-site/test.php">Vocabulary Test</a></li> -->
         <li class="list__item"><a href="/my-site/badges.php">Badges</a></li>
         <li class="list__item"><a href="/my-site/about.php">Contact</a></li>
         <li class="list__item"><a href="/my-site/faq-page.php">FAQ</a></li>
+        <!-- <li class="list__item"><a href="/my-site/test-api-2.php">API</a></li> -->
         <li class="list__item"><a href="/my-site/logout.php">Logout</a></li>
-        <!-- <li class="list__item"><a href="/my-site/column-style.php">Styles</a></li> -->
-        <!-- <li class="list__item"><a href="/my-site/index-alt.php">ALT INDEX</a></li> -->
+
 
 
     </ul>
