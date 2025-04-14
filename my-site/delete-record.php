@@ -4,7 +4,7 @@
     DATE: 19-02-2025
 
     HIGHLEVEL DESCRIPTION: 
-    This file is the logic delete a word from tb_vocab.
+    This file is the logic to delete a word from tb_vocab.
 
     DETAILS:
     This file is called from 'show-data.php' when the user presses on the delete icon.

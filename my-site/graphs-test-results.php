@@ -7,6 +7,10 @@
     When the script to create the line chart for the users test record. 
     This file will query the DB to retrieve the scores and dates for tests.
     It will return the inforation in a JSON object.
+
+    CHANGE HISTORY: 
+
+    15-03-25:   Results are now coming from 'tb_tests' rather than 'tb_test_results'.
 */
 function get_test_results()
 {
@@ -22,7 +26,7 @@ function get_test_results()
 
 
     //Limiting graph to last 10 tests. Order by oldest to newest.
-    $sql_select = "SELECT `test_score`, `test_date` FROM `tb_test_record` WHERE user_id='$user_id' ORDER BY `test_date` ASC LIMIT 10";
+    $sql_select = "SELECT `test_score`, `test_date` FROM `tb_tests` WHERE user_id='$user_id' ORDER BY `test_date` ASC LIMIT 10";
     $sql_result = $conn->query($sql_select);
 
     //print_r($sql_select);

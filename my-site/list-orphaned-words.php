@@ -131,6 +131,7 @@
 
 }
 
+
 </style>
 
 <body>
@@ -174,7 +175,16 @@
   <?php } ?>
 
   <p>&nbsp;</p>
+  <div class="main-section">
+        <div class="page-title">
+            <h1>OPRHANED WORDS</h1>
+            <h3>FIND THEM A NEW CATEGORY</H3>
+        </div>
+  </div>
+
   <p>&nbsp;</p>
+
+
 
   <table class="hoverTable">
     <thead>
@@ -207,7 +217,7 @@
     ?>
     <tr>
         <td><?php echo $row['fr_text']; ?></td>
-        <td><a href="edit-orphan-category.php?id=<?php echo $row['id']; ?>"><i class="fa fa-edit"></i></a></td>
+        <td><a href="edit-orphan-category.php?id=<?php echo $row['id']; ?>"><i class="fa fa-edit fa-lg"></i></a></td>
        <!-- <td><a href="delete-category.php?id=<?php echo $row['id']; ?>"><i class="fa-regular fa-trash-can align-center" style="color: #ec4e32;"></i></a></td> -->
     </tr>
     <?php

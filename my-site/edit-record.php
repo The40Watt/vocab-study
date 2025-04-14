@@ -15,8 +15,13 @@
 
     CHANGE HISTORY:
 
-    03-03-25    Mastery changes. Added new toggle field to allow the user to switch the word between mastered or not. The logic has been updated
+    03-03-25:   Mastery changes. Added new toggle field to allow the user to switch the word between mastered or not. The logic has been updated
                 in 'update-record.php' file to make the update to tb_vocab.
+
+    21-03-25:   Changing style over to alternate.   
+
+    31-03-25:   Live fix. The UTF-8 encoding is not working correclty so some characters not displaying correctly. I've added a line just before the DB query
+                is run to try to enforce UTF-8.
 
 
 -->
@@ -66,6 +71,10 @@ $user_data = check_login($conn); //if logged in, this variable will contain the 
             <?php           
                 $id = $_GET['id'];
                 $sql = "SELECT * FROM tb_vocab WHERE id='$id'";
+                
+                //Trying to enforce UTF-8
+                mysqli_set_charset($conn, "utf8mb4");
+
                 $run = mysqli_query($conn, $sql);
                 $row = mysqli_fetch_array($run);
                 $is_toggled = $row['is_mastered'];
@@ -75,24 +84,31 @@ $user_data = check_login($conn); //if logged in, this variable will contain the 
                 <!-- Adding hidden field to provide information for sql update. -->
                 <input type="text" value="<?php echo $id; ?>" name="row_id" hidden>
                 <div class="input">
-                    <input type="text" name="fr_text" class="new-input-field" value="<?php echo $row['fr_text']; ?>">
-                    <label class="new-input-label">Native Language</label>
+                    <input type="text" name="fr_text" class="alternate-input-field" value="<?php echo $row['fr_text']; ?>">
+                    <label class="alternate-input-label">Native Language</label>
                 </div>
                 <div class="input">
-                    <input type="text" name="en_text" class="new-input-field" value="<?php echo $row['en_text']; ?>">
-                    <label class="new-input-label">Target Language</label>
+                    <input type="text" name="en_text" class="alternate-input-field" value="<?php echo $row['en_text']; ?>">
+                    <label class="alternate-input-label">Target Language</label>
                 </div>
-                <div class="checkbox_item citem_3">
+                <!-- <div class="checkbox_item citem_3">
 		            <div class="title">Word Mastered?</div>
 		                <label class="checkbox_wrap">
 			                <input type="checkbox" name="toggle" class="checkbox_inp" value="Y" <?php echo ($is_toggled === 'Y') ? 'checked' : ''; ?>>
 		                	<span class="checkbox_mark"></span>
 		                </label>
-	            </div>
-                <div class="action">
-                    <!-- <input type="submit" name="SubmitButton" class="btn btn-secondary"> -->
-                    <button style="width:100%;" class="btn btn--secondary" name="SubmitButton" type="submit">MAKE CHANGE</button><p></p>
-                    <button style="width:100%;" class="btn" name="CancelButton" type="submit">CANCEL</button>
+	            </div> -->
+
+                <div class="switch-sudo-label">
+                <p>WORD MASTERED?</p>
+                </div>
+                <div class="master-switch">
+                    <input id="switch-1" type="checkbox" class="master-switch-input" name="toggle" class="checkbox_inp" value="Y" <?php echo ($is_toggled === 'Y') ? 'checked' : ''; ?>>
+                    <label for="switch-1" class="master-switch-label"></label>
+                </div>  
+                <div class="alternate-button-wrap">
+                    <button class="alternate-button" name="SubmitButton" type="submit">SAVE</button>
+                    <button class="alternate-button-cancel" name="CancelButton" type="submit">CANCEL</button>
                 </div>
 		    </form> 
         </div>

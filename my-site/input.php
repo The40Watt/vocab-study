@@ -19,7 +19,10 @@
 				a count is done of words on tb_vocab. If it hits a milestone number, it will add a row to tb_badge_record
 				if it doesn't exist. 
 
-	08-03-25:	Changed SQL that was returning the list of categories in the drop-down menu. It is now populated by a function called 'populate_category_dropdown'. 
+	08-03-25:	Changed SQL that was returning the list of categories in the drop-down menu. It is now populated by a function called 'populate_category_dropdown'.
+	
+	04-04-25:   Live fix. The UTF-8 encoding is not working correclty so some characters not displaying correctly. I've added a line just before the DB query
+				is run to try to enforce UTF-8.
 
 -->
 
@@ -64,6 +67,9 @@ if(isset($_POST['SubmitButton']))
 	$is_mastered = 'N';
 	$currentDateTime = date("Y-m-d H:i:s");
 
+	//Trying to enforce UTF-8
+	$conn->set_charset("utf8mb4");
+
 
 	//prepare SQL statement
 	$stmt = $conn->prepare("INSERT INTO `tb_vocab` (`fr_text`, `en_text`, `user_id`, `test_count`, `category_desc`,`is_mastered`,`date_mastered` ) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -78,6 +84,7 @@ if(isset($_POST['SubmitButton']))
 	if ($stmt) {
 		//After insert of new word, check word count to see if a badge has been earned. 
 		$sql_count_rows = "SELECT COUNT(*) AS count FROM `tb_vocab` WHERE user_id = ?";
+
 		$run_count_row = $conn->prepare($sql_count_rows);
 
 		$run_count_row->bind_param("i", $user_id);
@@ -129,8 +136,6 @@ if(isset($_POST['SubmitButton']))
 	<head>
 		<meta charset="utf-8">
 		<title>Word Up: Add a Word</title>
-		<!-- <link rel="stylesheet" href="css/simple.css">
-		<link rel="stylesheet" href="css/advanced.css"> -->
 		<link rel="stylesheet" href="css/stylin.css">
 	</head>
 	
@@ -141,6 +146,12 @@ if(isset($_POST['SubmitButton']))
 
 		<main>
 
+		<div class="main-section">
+			<div class="page-title">
+				<h1>ADD A NEW WORD</h1>
+			</div>
+  		</div>
+			<p>&nbsp;&nbsp;</p>
 			<!-- Notification of successful data input. -->
 			<?php 
 				if(isset($_GET['data-entered'])){ 
@@ -152,17 +163,18 @@ if(isset($_POST['SubmitButton']))
 			<?php } ?>
 			
 			<!-- Start of code for the input form. -->
-			<div class="container">
+			<!-- <div class="container"> -->
+			<div style="min-height: 600px">
 				<div class="card">
 					<!--<div class="card-image">	
 						<h2 class="card-heading">
 							Add new words.
 						</h2>
 					</div>-->
-					<form class="card-form" action="input.php" method="POST">
-						<div class="input">
-							<label class="new-input-label"></label>
-								<select id="category" class="new-input-field" name="category" required autofocus>
+					<form class="card-form" action="input.php" method="POST" >
+						<div class="alternate-input">
+							<label class="alternate-input-label" for="category"></label>
+								<select id="category" class="alternate-input-field" name="category" required autofocus>
 									<option value="">-- Category --</option>
 									<?php
 										if ($result->num_rows > 0 ) {
@@ -173,21 +185,22 @@ if(isset($_POST['SubmitButton']))
 									?>
 								</select>
 						</div>
-						<div class="input">
-							<input type="text" class="new-input-field" name="fr_text" required/>
-							<label class="new-input-label">Target Language</label>
+						<div class="alternate-input">
+							<input type="text" class="alternate-input-field" name="fr_text" id="tl_lang" required/>
+							<label class="alternate-input-label" for="tl_lang" >Target Language</label>
 						</div>
-						<div class="input">
-							<input type="text" class="new-input-field" name="en_text" required/>
-							<label class="new-input-label">Native Language</label>
+						<div class="alternate-input">
+							<input type="text" class="alternate-input-field" name="en_text" id="native_lang" required/>
+							<label class="alternate-input-label" for="native_lang">Native Language</label>
 						</div>
-						<div class="action">
-							<button style="width:100%;" class="btn btn--secondary" name="SubmitButton" type="submit">ADD WORD</button>
+						<div class="alternate-button-wrap">
+							<button class="alternate-button" name="SubmitButton" type="submit">ADD WORD</button>
 						</div>
 					</form>
 				</div>
 			</div>
-
+			<!-- </div> -->
+			<p>&nbsp;&nbsp;</p>
 		</main>
 
 		<!-- Add the footer. -->

@@ -12,6 +12,10 @@
 
     CHANGE HISTORY:
 
+    22-03-25:   Changing look to alternate look. Adding title.
+
+                Fixed 'Confirm Form Resubmission' error. Using the PRG (Post/Redirect/Get) pattern.
+
 
 -->
 
@@ -55,80 +59,7 @@
 </head>
 
 <style>
-    .container {
-  display: block;
-  position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-size: 18px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  color: #37596f;
-  font-family: "Rubik", sans-serif;
-  font-weight: 700;
 
-}
-
-/* Hide the browser's default checkbox */
-.container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-/* Create a custom checkbox */
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
-  box-shadow: 2px 2px 0 0 black;
-
-}
-
-/* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-
-/* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
-  background-color: #2196F3;
-}
-
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-/* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
-  display: block;
-
-}
-
-/* Style the checkmark/indicator */
-.container .checkmark:after {
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-
-}
 
 </style>
 
@@ -139,7 +70,12 @@
 </header>
 <main>
 
-
+<p>&nbsp;</p>
+  <div class="main-section">
+        <div class="page-title">
+            <h1>YOUR CATEGORIES</h1>
+        </div>
+  </div>
 
 
   <!-- Notification of successful update. -->
@@ -173,7 +109,6 @@
   <?php } ?>
 
   <p>&nbsp;</p>
-  <p>&nbsp;</p>
 
   <table class="hoverTable">
     <thead>
@@ -187,6 +122,16 @@
 
     <?php 
 
+    //Adding this if... statement below to fix 'confirm resubmission error'.
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      // Process the form data
+      $name = $_POST['name'] ?? ''; 
+
+      // Redirect to prevent form resubmission
+      header("Location: ".$_SERVER['PHP_SELF']);
+      exit();
+    }
+
     //Get the list of the users categories.   
     $result = populate_category_dropdown();
 
@@ -196,8 +141,8 @@
     ?>
     <tr>
         <td><?php echo $row['category_desc'] ?></td>
-        <td><a href="edit-category.php?id=<?php echo $row['id']; ?>&category_desc=<?php echo $row['category_desc']; ?>"><i class="fa fa-edit"></i></a></td>
-        <td><a href="delete-category.php?id=<?php echo $row['id']; ?>&category_desc=<?php echo $row['category_desc']; ?>"><i class="fa-regular fa-trash-can align-center" style="color: #ec4e32;"></i></a></td>
+        <td><a href="edit-category.php?id=<?php echo $row['id']; ?>&category_desc=<?php echo $row['category_desc']; ?>"><i class="fa fa-edit fa-lg"></i></a></td>
+        <td><a href="delete-category.php?id=<?php echo $row['id']; ?>&category_desc=<?php echo $row['category_desc']; ?>"><i class="fa-regular fa-trash-can align-center fa-lg" style="color: #ec4e32;"></i></a></td>
     </tr>
     <?php
 

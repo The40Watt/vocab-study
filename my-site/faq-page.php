@@ -15,6 +15,8 @@
 
     03-03-25: Added row on FAQ page to explain the concept of mastery. 
 
+    04-04-25: Updated the text on some entries. 
+
 
 -->
 <?php
@@ -45,10 +47,14 @@
 		<header>
     		<?php include "include/nav.php" ?>
 		</header>
+<main>
+    <div class="main-section">
+        <div class="page-title">
+            <h1>FREQUENTLY ASKED QUESTIONS</h1>
+        </div>
+    </div>
 
 <div class="wrapper">
-      <h1>Frequently Asked Questions</h1>
-
       <div class="faq">
         <button class="accordion">
           RELEASE NOTES - v0.9
@@ -56,62 +62,35 @@
         </button>
         <div class="pannel">
           <p>
-            Date: .......
+            Date: 5th April 2025
           </p>
             <p>&nbsp;</p>
-          <p>
-            This website has gone live in a <strong>BETA</strong> phase so that any kinks can be ironed out before 
-            hitting the v1.0 milestone. 
-          </p>
+          <p>This website has gone live in a <strong>BETA</strong> phase so that any kinks can be ironed out before hitting the v1.0 milestone.</p>
+          <p>&nbsp;</p>
+          <p>As the site has just gone live, all users will be registered as Premium users upon registration so they can enjoy all the features of the site. This free period will last approx. one month.</p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="accordion">
+          PREMIUM
+          <i class="fa-solid fa-circle-chevron-down"></i>
+        </button>
+        <div class="pannel">
+          <p>There are 4 tabs of information available on the users dashboard. The <i>Summary Details</i> tab is always available but the other 3 (Progress & Achievements, Recent Activity and Testing Details) which provide some more in-depth information
+          are only available once a donation has been made on the <strong>Ko-Fi</strong> page for Word Up. A payment of €1, will unlock all features for a month. The need for a subscription is
+          only driven by the need to cover the monthly website server / hosting costs.</p>
         </div>
       </div>
 
       <div class="faq">
         <button class="accordion">
           PRIVACY
-        <i class="fa-solid fa-circle-chevron-down"></i>
-        </button>
-        <div class="pannel">
-          <p>
-            I created this site as a way to help people progress in their language learning journey. Not to gather information. You might have
-            noticed that during the sign-up process you were not asked for an e-mail address. So if you are using this site, there is no contact
-            information stored on you. There <strong>are no cookies in use</strong> either.</p>
-            </p>&nbsp;</p>
-            <p>
-            The one exception is if you choose to submit a message via the form on the contact page. If you submit a message, the e-mail you 
-            provide will be saved in order to respond if needed.
-          </p>
-        </div>
-      </div>
-
-      <div class="faq">
-        <button class="accordion">
-          NEW FEATURES ROADMAP
           <i class="fa-solid fa-circle-chevron-down"></i>
         </button>
         <div class="pannel">
           <p>
-            <strong>Create your own categories. </strong>When you submit a new word, you have to choose between on of the 9 available categories to put that word
-            in. Is it a fully comprehensible list? Probably not. The plan is to introduce a feature to allow the user 
-            to create their own categories to add to the list. 
-          </p>
-          <p>&nbsp;</p>
-          <p>
-            <strong>Word Mastery. </strong>When you start a test on the site, you will be presented with your least tested words. But what if you have fully mastered
-            that word and no longer need it to appear in a test? Right now you can delete the word but you probably want to keep your library of words intact. So the
-            idea is to introduce the concept of <i>word mastery</i>. Simply mark the words as known and it will no longer appear in a test.  
-          </p>
-          <p>&nbsp;</p>
-          <p>
-            <strong>Word Export. </strong>We can't see into the future, so who knows if some unforeseen event takes this site off-line. And with it, the library of
-            words you have worked hard to build up and learn. Well, with the introduction of a function to export your library into a file that will be fully compatible
-            with almost all other applications and databases, so you won't lose a thing.
-          </p>
-          <p>&nbsp;</p>
-          <p>
-            <strong>More fun. </strong>Like the badges, the plan is to add some more functions to highlight achievements of users on the site and maybe introduce some
-            friendly competition among you.
-          </p>
+            I created this site as a way to help people progress in their language learning journey. Not to gather information. On signing up you provided your email address to be used for verification purposes if you were to forget your password, nothing else. There are no newsletters here. Nor any cookies, delicious as they sound.
         </div>
       </div>
 
@@ -128,7 +107,7 @@
           <p>&nbsp;</p>
           <p>
             You can mark a word as <i>mastered</i> in your vocabularly library, or unmark it if needed. Once it is marked, you can choose to filter it out of your list 
-            view in your library and it will not appear in a test while it is marked. 
+            view in your library and it will not appear in a test while it is marked as mastered. 
           </p>
         </div>
       </div>
@@ -169,20 +148,19 @@
 
       <div class="faq">
         <button class="accordion">
-          I HAVE NEW ICONS ON MY DASHBOARD?
+          I HAVE A NEW TAB ON MY DASHBOARD?
         <i class="fa-solid fa-circle-chevron-down"></i>
         </button>
         <div class="pannel">
           <p>
-            Firstly, congratulations. These icons denote users who have achieved a specific achievement among all users of the site. There is an award for the 
+            Firstly, congratulations. This new tab denotes users who have completed specific achievements among all users of the site. There is an award for the 
             user with the most words in their library and an award for the user with the most completed tests. The third award is the most unique in that it 
             can only be awarded to one user. Ever. The first user to unlock all the <strong>Badges</strong> will unlock this unique achievement.
           </p>
           <p>&nbsp;<p>
-          <p><i class="fa-solid fa-ranking-star fa-2xs" style="color:rgb(6, 6, 6);"></i>  | The user with most words.</p>
-          <p><i class="fa-solid fa-medal fa-2xs" style="color:rgb(6, 6, 6);"></i> | The user with most completed tests.</p>
-          <p><i class="fa-solid fa-trophy fa-2xs" style="color:rgb(6, 6, 6);"></i>  | The user to complete all badges first.</p>
-
+          <p><i class="fa-solid fa-crown fa-2xs" style="color:rgb(6, 6, 6);"></i>  | The user with most words.</p>
+          <p><i class="fa-solid fa-trophy fa-2xs" style="color:rgb(6, 6, 6);"></i> | The user with most completed tests.</p>
+          <p><i class="fa-solid fa-gem fa-2xs" style="color:rgb(6, 6, 6);"></i>  | The user to complete all badges first.</p>
           </div>
       </div>
 
@@ -194,7 +172,7 @@
         <div class="pannel">
           <p>
             In the <strong>User Preferences</strong> section, you have the option to set a <i>Target Language</i>. By doing so, you will be able to get a new random word 
-            in your target language every time you log in.  
+            in your target language every time you log in. This is not available for all languages at the moment. 
           </p>
         </div>
       </div>
@@ -283,7 +261,7 @@
         }
 
     </script>
-
+  </main>
 		<!-- Add the footer. -->
 		<?php include "include/footer.php" ?>
 </body>

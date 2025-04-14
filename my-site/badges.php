@@ -14,10 +14,14 @@
 
     CHANGE HISTORY:
 
-    05-03-25: Added badge #10 - user has mastered one word. It will call a new function (check_badge_record) to determine if user has
-              earned badge and the date. 
+    05-03-25:   Added badge #10 - user has mastered one word. It will call a new function (check_badge_record) to determine if user has
+                earned badge and the date. 
 
-              Bug fixes to remove unnecessary parameter variable that were causing warnings. 
+                Bug fixes to remove unnecessary parameter variable that were causing warnings. 
+
+    13-03-25:   Changed the description of Badge #4.
+
+    21-03-25:   Now pointing to a new .css file. Changed the .body so that it wasn't in one narrow column and it gives the badges room. 
 
 
 -->
@@ -50,7 +54,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Up: Badges</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/stylin.css">
+    <link rel="stylesheet" href="css/badges-stylin.css">
     <style>
 
 
@@ -61,11 +65,24 @@
 	<?php include "include/nav.php" ?>
 </header>
 <main>
+
+<?php 
+    $current_badge_count = find_current_badge_count();
+?>
+    <div class="main-section">
+        <div class="page-title">
+            <h1>CHECK OUT YOUR TROPHY CABINET</h1>
+            <h3><?php echo $current_badge_count; ?> / 14 ACQUIRED</h3>
+        </div>
+    </div>
+
+
+
     <p></p>
     <div class="main_container">
         <!-- This is the 1st badge. Awarded for creating an account. -->
         <div class="product">
-            <img src="images/new_account.png" alt="">
+            <img src="images/badge1.jpg" alt="">
             <div class="product_desc">
                 <h3>Signed-Up</h3>
                 <h6>Awarded: <?php 
@@ -87,7 +104,7 @@
                 $newDate = new DateTime($date);
                 $formatted_firstword_date = $newDate->format('d-m-Y');
             ?>
-            <img src="images/badge_first_word.png" alt="">
+            <img src="images/badge2.jpg" alt="">
             <div class="product_desc">
                 <h3>1st word added.</h3>
                 <h6>Awarded: <?php echo $formatted_firstword_date ?></h6>
@@ -115,7 +132,7 @@
                // if ($num_categories == 9) { 
                if ($all_categories == 'Y') {
             ?>            
-            <img src="images/all_categories.png" alt="">
+            <img src="images/badge3.jpg" alt="">
             <div class="product_desc">
                 <h3>All categories</h3>
                 <h6>Awarded: 
@@ -158,9 +175,9 @@
                 
                 if($test_count > 0) { 
             ?>
-            <img src="images/first_test.png" alt="">
+            <img src="images/badge4.jpg" alt="">
             <div class="product_desc">
-                <h3>Started a test.</h3>
+                <h3>Completed a test.</h3>
                 <h6>Awarded: 
                     <?php
                         if (is_null($first_test_date)) {
@@ -199,7 +216,7 @@
                 
                 if($word_badge_five == 'Y') {  
             ?>
-            <img src="images/badge_first_word.png" alt="">
+            <img src="images/badge5.jpg" alt="">
             <div class="product_desc">
                 <h3>25 words</h3>
                 <h6>Awarded: 
@@ -242,7 +259,7 @@
                 
                 if($word_badge_six == 'Y') {  
             ?>
-            <img src="images/100_words.png" alt="">
+            <img src="images/badge6.jpg" alt="">
             <div class="product_desc">
                 <h3>100 words</h3>
                 <h6>Awarded: 
@@ -284,7 +301,7 @@
                 
                 if($word_badge_seven == 'Y') {
             ?>
-            <img src="images/250_words.png" alt="">
+            <img src="images/badge7.jpg" alt="">
             <div class="product_desc">
                 <h3>250 words</h3>
                 <h6>Awarded: 
@@ -325,7 +342,7 @@
                 
                 if($word_badge_eight == 'Y') {
             ?>
-            <img src="images/1000_words.png" alt="">
+            <img src="images/badge8.jpg" alt="">
             <div class="product_desc">
                 <h3>1000 words</h3>
                 <h6>Awarded: 
@@ -359,7 +376,7 @@
               list($has_contacted, $message_date) = did_reach_out($badge_number);
 
                 if ($has_contacted > 0) { ?>            
-            <img src="images/submit_message.png" alt="">
+            <img src="images/badge9.jpg" alt="">
             <div class="product_desc">
                 <h3>You reached out!</h3>
                 <h6>Awarded: <?php 
@@ -383,7 +400,7 @@
                 
                 if($mastered_one == 'Y') {  
             ?>
-            <img src="images/first_test.png" alt="">
+            <img src="images/badge10.jpg" alt="">
             <div class="product_desc">
                 <h3>Mastered 1 word.</h3>
                 <h6>Awarded: 
@@ -407,7 +424,7 @@
             </div>
             <?php } ?>
         </div>
-         <!-- This is the 11th badge. Awarded for mastering a word. -->
+         <!-- This is the 11th badge. Awarded for mastering 25 words. -->
          <div class="product">
             <?php
                 $mastered_badge_num = 11;   //badge_num on table
@@ -416,7 +433,7 @@
                 
                 if($mastered_one == 'Y') {  
             ?>
-            <img src="images/first_test.png" alt="">
+            <img src="images/badge11.jpg" alt="">
             <div class="product_desc">
                 <h3>Mastered 25 words.</h3>
                 <h6>Awarded: 
@@ -440,7 +457,7 @@
             </div>
             <?php } ?>
         </div>
-        <!-- This is the 12th badge. Awarded for mastering a word. -->
+        <!-- This is the 12th badge. Awarded for mastering 100 words. -->
         <div class="product">
             <?php
                 $mastered_badge_num = 12;   //badge_num on table
@@ -449,7 +466,7 @@
                 
                 if($mastered_one == 'Y') {  
             ?>
-            <img src="images/first_test.png" alt="">
+            <img src="images/badge12.jpg" alt="">
             <div class="product_desc">
                 <h3>Mastered 100 words.</h3>
                 <h6>Awarded: 
@@ -473,7 +490,7 @@
             </div>
             <?php } ?>
         </div>
-        <!-- This is the 13th badge. Awarded for mastering a word. -->
+        <!-- This is the 13th badge. Awarded for mastering 250 words.. -->
         <div class="product">
             <?php
                 $mastered_badge_num = 13;   //badge_num on table
@@ -482,7 +499,7 @@
                 
                 if($mastered_one == 'Y') {  
             ?>
-            <img src="images/first_test.png" alt="">
+            <img src="images/badge13.jpg" alt="">
             <div class="product_desc">
                 <h3>Mastered 250 words.</h3>
                 <h6>Awarded: 
@@ -515,7 +532,7 @@
                 
                 if($badge_completion >= 14) {  
             ?>
-            <img src="images/first_test.png" alt="">
+            <img src="images/badge14.jpg" alt="">
             <div class="product_desc">
                 <h3>Earned all badges. SUPERSTAR.</h3>
                 <h6>Awarded: 

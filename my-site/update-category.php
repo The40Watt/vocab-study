@@ -34,7 +34,8 @@
             $category_desc_upper = strtoupper($category_desc); //Force category to be uppercase.
 
 
-
+        	//Trying to enforce UTF-8
+	        $conn->set_charset("utf8mb4");
 
             //prepare the SQL statement
             $sql = "UPDATE `tb_user_categories` SET `category_desc`=? WHERE id=? and user_id=?";

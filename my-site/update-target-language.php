@@ -38,7 +38,7 @@
                 $sql = "UPDATE `tb_users` SET `tl_code`=? WHERE user_id=?";
                 $run = $conn->prepare($sql);
 
-                print_r($sql);
+               // print_r($sql);
 
                 //Bind parameters
                 $run->bind_param("si", $lang_code, $user_id);

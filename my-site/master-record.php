@@ -60,15 +60,15 @@ if ($is_mastered === "Y") {
                 update_mastery_badge_records($mastered_count);
                 echo ("this is 1");
                 break;
-            case 2:
+            case 25:
                 update_mastery_badge_records($mastered_count);
                 echo ("this is 25");
                 break;
-            case 3:
+            case 100:
                 update_mastery_badge_records($mastered_count);
                 echo ("this is 100");
                 break;
-            case 4:
+            case 250:
                 update_mastery_badge_records($mastered_count);
                 echo ("this is 250");
                 break;

@@ -16,6 +16,10 @@
 
     CHANGE HISTORY:
 
+	21-03-25: Changed style of form over to 'alternate' style.
+
+	06-04-25: Live fix. Adding text to allow users to contact me directly via email.
+
 
 -->
 <?php
@@ -73,33 +77,34 @@
 
 		
 		<main>
+
+		<div class="main-section">
+			<div class="page-title">
+				<h1>GET IN TOUCH</h1>
+			</div>
+		</div>
 			<!-- Code for the message form. -->
 			<div class="card">
 			<form method="POST" action="contact-form.php" class="card-form">
-				<h2>Get in touch <i class="fa-regular fa-comment fa-bounce"></i></h2>
-				<p>
-				<div class="input">
-					<input class="new-input-field" name="name" type="text" id="name" required/>
-					<label class="new-input-label">Name: </label>
+				<div class="alternate-input">
+					<textarea class="alternate-input-field" name="message" id="message" tabindex="4" required></textarea>
+					<label for="message" class="alternate-input-label">Message: </label>
+					<input class="alternate-input-field" name="subject" type="text" id="subject" tabindex="3" required/>
+					<label for="subject" class="alternate-input-label">Subject: </label>
+					<input class="alternate-input-field" name="email" type="email" id="email" tabindex="2" required/>
+					<label for="email" class="alternate-input-label">Email: </label>
+					<input class="alternate-input-field" name="name" type="text" id="name" tabindex="1" required/>
+					<label for="name" class="alternate-input-label">Name: </label>
 				</div>
-				<div class="input">
-					<input class="new-input-field" name="email" type="email" id="email" required/>
-					<label class="new-input-label">Email: </label>
-				</div>
-				<div class="input">
-					<input class="new-input-field" name="subject" type="text" id="subject" required/>
-					<label class="new-input-label">Subject: </label>
-				</div>
-				<div class="input">
-					<textarea class="new-input-field" name="message" id="message" required></textarea>
-					<label class="new-input-label">Message: </label>
-				</div>
-				<div class="action">
-					<input style="width:100%;" class="btn btn--secondary" type="submit" value="SEND MESSAGE" />
+				<div class="alternate-button-wrap">
+					<button style="width:100%;" class="alternate-button" type="submit">SEND MESSAGE</button>
 				</div>
 			</form>
 			</div>
-
+			<div style="text-align: center;">
+				<h3>OR</h3>
+				<p>Contact us directly at <a href="mailto:admin@wordup.ie">admin@wordup.ie</a>.</p>
+			</div>
 		</main>
 		
 		<!-- Add the footer. -->

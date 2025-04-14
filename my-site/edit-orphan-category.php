@@ -13,7 +13,7 @@
 
     CHANGE HISTORY:
 
-
+    22-03-25:   Changing style to alternate style.
 
 -->
 
@@ -54,8 +54,15 @@ $result = populate_category_dropdown();
 
 	<main>
 
+    <div class="main-section">
+        <div class="page-title">
+            <h1>OPRHANED WORDS</h1>
+            <h3>GIVE THEM A NEW CATEGORY</H3>
+        </div>
+  </div>
+
             <p>&nbsp;</p>
-            <p>&nbsp;</p>
+
 
         <div class="card">
             
@@ -72,13 +79,13 @@ $result = populate_category_dropdown();
 		    <form action="update-orphaned-category.php" method="post" class="form-card">
                 <!-- Adding hidden field to provide information for sql update. -->
                 <input type="text" value="<?php echo $id; ?>" name="row_id" hidden>
-                <div class="input">
-                    <input type="text" name="fr_text" class="new-input-field" value="<?php echo $row['fr_text']; ?>" readonly>
-                    <label class="new-input-label">Orphaned Word</label>
+                <div class="alternate-input">
+                    <input type="text" name="fr_text" class="alternate-input-field" value="<?php echo $row['fr_text']; ?>" readonly>
+                    <label class="alternate-input-label">Orphaned Word</label>
                 </div>
                 <p></p>
-                <label for="category-label" class="new-input-label">Choose a new Category.</label>
-                <select name="category" id="category" class="new-input-field" autofocus>
+                <label for="category-label" class="alternate-input-label">Choose a new Category.</label>
+                <select name="category" id="category" class="alternate-input-field" autofocus>
                 <option value="">-- Category --</option>    
                     <?php
                         if ($result->num_rows > 0 ) {
@@ -88,10 +95,10 @@ $result = populate_category_dropdown();
                         }
                     ?>
                 </select>
-                <div class="action">
+                <div class="alternate-button-wrap">
                     <!-- <input type="submit" name="SubmitButton" class="btn btn-secondary"> -->
-                    <button style="width:100%;" class="btn btn--secondary" name="SubmitButton" type="submit">MAKE CHANGE</button><p></p>
-                    <button style="width:100%;" class="btn" name="CancelButton" type="submit">CANCEL</button>
+                    <button class="alternate-button" name="SubmitButton" type="submit">MAKE CHANGE</button><p></p>
+                    <button class="alternate-button-cancel" name="CancelButton" type="submit">CANCEL</button>
                 </div>
 		    </form> 
         </div>

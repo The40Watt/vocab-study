@@ -72,8 +72,6 @@
      *              3. show users average word accuracy
      *              4. show users the category in which they have the highest accuracy
      *              5. show users the current days streak they are on for testing.  
-     * 
-     * 31-03-25:    Live fix. The code to break out of the loop after 5 iterations for high / low scoring words was not working. Corrected.
      */
 
 	$_SESSION;
@@ -130,6 +128,9 @@
         $_SESSION['is_premium'] = false; // Explicitly set for clarity
     }
 
+    echo ("Is user premium: ") . $_SESSION['is_premium'];
+
+    print_r($_SESSION['is_premium']);
 
     //The variables set below are used throughout the script. Only calling functions if user has at least one word.
     if ($rowcount > 0) {
@@ -284,7 +285,7 @@
 		<link rel="stylesheet" href="css/index-stylin.css">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="scripts/wordcloud2.js"></script>
-        
+        <style>
             <style>
  #myProgress {
             width: 100%;
@@ -364,13 +365,8 @@ canvas {
 
 
 
-/* This code is making the wordcloud responsive. */
-#wordcloud {
-    width: 100%;
-    height: auto;
-    display: block;  /* Prevents extra space below the canvas */
-    max-width: 100%; /* Ensures it does not overflow its parent container */
-}
+
+
 
 
 
@@ -463,22 +459,22 @@ canvas {
 
 
 
-<div class="tab-menu-button-wrap">
-    <button class="alternate-button" onclick="showTab('tab1')">SUMMARY DETAILS</button>
-    <button class="alternate-button" onclick="showTab('tab2')">PROGRESS & ACHIEVEMENTS</button>
-    <button class="alternate-button" onclick="showTab('tab3')">RECENT ACTIVITY</button>
-    <button class="alternate-button" onclick="showTab('tab4')">TESTING DETAILS</button>
+<div style="justify-content: left;" class="alternate-button-wrap">
+    <button style="width:20%;" class="alternate-button" onclick="showTab('tab1')">SUMMARY DETAILS</button>
+    <button style="width:20%;" class="alternate-button" onclick="showTab('tab2')">PROGRESS & ACHIEVEMENTS</button>
+    <button style="width:20%;" class="alternate-button" onclick="showTab('tab3')">RECENT ACTIVITY</button>
+    <button style="width:20%;" class="alternate-button" onclick="showTab('tab4')">TESTING DETAILS</button>
     <?php
         if ($is_a_site_champ == 'Y') {
     ?>
-        <button class="alternate-special-button" onclick="showTab('tab5')">SITE CHAMPION!</button>
+        <button style="width:20%;" class="alternate-special-button" onclick="showTab('tab5')">SITE CHAMPION!</button>
     <?php
         }
     ?>
     <?php 
         if ($user_data['admin_user'] === 'Y') {
     ?>
-        <button class="alternate-special-button" onclick="showTab('tab6')">ADMIN</button>
+        <button style="width:20%;" class="alternate-special-button" onclick="showTab('tab6')">ADMIN</button>
     <?php
         }
     ?>
@@ -489,7 +485,7 @@ canvas {
 <div style="border: 0px solid red;" id="tab1" class="tab-container active">
     <div style="border: 0px solid green;" class="card">
                 <div class="img-container a">
-                    <!-- <img src="images/progress.png" width="100px" alt=""> -->
+                    <img src="images/progress.png" width="100px" alt="">
                 </div>
                 <!-- ########## START OF SUMMARY DETAILS SECTION ########### -->
                 <h1>SUMMARY DETAILS</h1>
@@ -531,14 +527,8 @@ canvas {
                                 <canvas id="accuracyChart"></canvas>
                             </div>
                         </div><!-- Close stat-container-inner-2 -->
-                    </div> <!-- Close stat-container-outer --> 
-                    <div class="stat-container-outer">   
-                        <div class="stat-container-inner-3">
-                            <div class="stat-box-horizontal">
-                                <p>The average duration between adding a word and marking it as <i>mastered</i> is <strong><?php echo $average_to_mastery; ?></strong> days for you. </p>
-                            </div>
-                        </div>
-                    </div>
+                    </div> <!-- Close stat-container-outer -->    
+
                         <!-- Modal for Expanded Chart -->
                         <div id="chartModal" class="modal">
                             <div class="modal-content">
@@ -561,12 +551,13 @@ canvas {
 </div>
 
 <!-- ############# START OF TAB 2 ################# -->
+<?php if (isset($_SESSION['is_premium']) && $_SESSION['is_premium']): ?>
 
-<div id="tab2" class="tab-container premium">
+<div id="tab2" class="tab-container">
     <!-- ########## START OF PROGRESS & ACHIEVEMENTS SECTION ############# -->
     <div style="border: 0px solid red;" class="card">
             <div class="img-container b">
-                <!-- <img src="images/statistics.png" width="100px" alt=""> -->
+                <img src="images/statistics.png" width="100px" alt="">
             </div>
             <h1>PROGRESS & ACHIEVEMENTS</h1>
             <?php 
@@ -637,18 +628,21 @@ canvas {
         </div>
         <!-- ########## END OF PROGRESS & ACHIEVEMENTS SECTION ############# -->
 </div>
+<?php else: ?>
+    <div id="locked" class="tab-container">
+        <h2>🔒 Premium Content Locked</h2>
+        <p><a href="subscribe.php">Upgrade to Premium</a> to unlock all content.</p>
+    </div> 
 
-
-
-
+<?php endif; ?>
 
 
 <!-- ########## START OF TAB 3 SECTION ############# -->
-<div id="tab3" class="tab-container premium">
+<div id="tab3" class="tab-container">
      <!-- ########## START OF RECENT ACTIVITY SECTION ############# -->
      <div class="card">
             <div class="img-container c">
-                <!-- <img src="images/calendar.png" width="100px" alt=""> -->
+                <img src="images/calendar.png" width="100px" alt="">
             </div>
                 <h1>RECENT ACTIVITY</h1>
                     <?php
@@ -751,11 +745,11 @@ canvas {
 </div>
 
 <!-- ########## START OF TAB 4 SECTION ############# -->
-<div id="tab4" class="tab-container premium">
+<div id="tab4" class="tab-container">
         <!-- ############# START OF DETAILED TESTING CARD ################# -->
         <div class="card">
             <div class="img-container d">
-                <!-- <img src="images/lang-tips.png" width="100px" alt=""> -->
+                <img src="images/lang-tips.png" width="100px" alt="">
             </div>
             <h1>DETAILED TESTING STATISTICS</h1>
             <!-- START OF CODE FOR HIGH SCORING WORDS SECTION -->
@@ -849,48 +843,37 @@ canvas {
                         </div>
                     </div> <!-- Close tests-container-inner-1 -->
                     <div class="tests-container-inner-2">
+
+
+                    <p>You consistently score 100% on the words below.</p>
+                    <ul class="recent-words">
                         <?php
-                            if(!empty($potential_mastered)) {
+
+                            foreach ($potential_mastered as $row) {
+                                $vocab_id_array[] = $row['vocab_id']; //want to pass this to test_record.php
                         ?>
-                            <p>You consistently score 100% on the word(s) below.</p>
-                            <ul class="recent-words">
-                                <?php
-                                    $high_score_counter = 0;
-
-                                    foreach ($potential_mastered as $row) {
-                                        $vocab_id_array[] = $row['vocab_id']; //want to pass this to test_record.php
-                                ?>
-                                    <li> <?php    echo ($row['word']); ?> </li>
-                                <?php
-                                    $high_score_counter++;
-
-                                    if ($high_score_counter === 5) {
-                                        break; // Exit the loop when 5 is reached. The SQL can return an array of 15 but keeping to 5 for display purposes
-                                    }
-                                    }
-                                ?>
-                            </ul>
+                            <li> <?php    echo ($row['word']); ?> </li>
                         <?php
-                            //convert vocab_id array to JSON
-                            $json_vocab_id = json_encode($vocab_id_array);
-
-                            //URL encode the JSON
-                            $encoded_vocab_id = urlencode($json_vocab_id);
+                            }
                         ?>
-                        <form action="auto-mastery-update.php?vocab_id=<?php echo $encoded_vocab_id ?>" method="POST" class="form-card">
-                            <div class="alternate-button-wrap">
-                                <button class="alternate-button" name="MarkMastered" type="submit">MASTER WORDS</button>
-                            </div>
-                        </form>
-                    
+                    </ul>
+
                     <?php
-                        } //end of check for empty array ($potential_mastered)
-                        else {
+
+                        //convert vocab_id array to JSON
+                        $json_vocab_id = json_encode($vocab_id_array);
+
+                        //URL encode the JSON
+                        $encoded_vocab_id = urlencode($json_vocab_id);
+
                     ?>
-                        <h4>As you complete more tests, more information will be available here.</h4>
-                    <?php   
-                        }
-                    ?>
+
+                    <form action="auto-mastery-update.php?vocab_id=<?php echo $encoded_vocab_id ?>" method="POST" class="form-card">
+                        <div class="alternate-button-wrap">
+                            <button class="alternate-button" name="MarkMastered" type="submit">MASTER WORDS</button>
+                        </div>
+                    </form>
+
                     </div> <!-- Close test-container-inner-2 -->
 
                     <div class="tests-container-inner-2">
@@ -901,54 +884,52 @@ canvas {
                             //Call function to look for potential words to be marked as mastered
                             $low_score_words = find_low_score_words();
 
-                            if(!empty($low_score_words)) {
                     ?>
-                        <p>The following is a list of words you struggle with:</p>
-                        <ul class="recent-words">
-                            <?php
-                                //$potential_mastered = find_potential_mastered_words();
-                                
-                                $low_score_counter = 0;
 
-                                foreach ($low_score_words as $row) {
-                                    $vocab_id_low_scores_array[] = $row['vocab_id']; //want to pass this to test_record.php
-                            ?>
+                    <p>The following is a list of words you struggle with:</p>
+                    <ul class="recent-words">
+                        <?php
+                            //$potential_mastered = find_potential_mastered_words();
 
-                                <li> <?php echo ($row['word']); ?> [<?php echo ($row['category_desc']); ?>] </li>
-                            <?php
+                            foreach ($low_score_words as $row) {
+                                $vocab_id_low_scores_array[] = $row['vocab_id']; //want to pass this to test_record.php
+                        ?>
 
-                                    $low_score_counter++;
-
-                                    if ($low_score_counter === 5) {
-                                        break; // Exit the loop when 5 is reached. The SQL can return an array of 15 but keeping to 5 for display purposes
-                                    }
-
+                            <li> <?php echo ($row['word']); ?> [<?php echo ($row['category_desc']); ?>] </li>
+                        <?php
+                                if ($row === 5) {
+                                    break; // Exit the loop when 5 is reached. The SQL can return an array of 15 but keeping to 5 for display purposes
                                 }
-                            ?>
-                        </ul>
+
+                            }
+                        ?>
+                    </ul>
+
                     <?php
+
                         //convert vocab_id array to JSON
                         $json_vocab_id_low_scores = json_encode($vocab_id_low_scores_array);
 
                         //URL encode the JSON
                         $encoded_vocab_id_low_scores = urlencode($json_vocab_id_low_scores);
+
                     ?>
-                        <form action="test.php?vocab_id=<?php echo $encoded_vocab_id_low_scores ?>" method="POST" class="form-card">
-                            <div class="alternate-button-wrap">
-                                <input type="hidden" name="form_identifier" value="HardTest">
-                                <button class="alternate-button" name="HardTest" type="submit">TAKE HARD TEST</button>
-                            </div> 
-                        </form>
-                    <?php 
-                            } //end of if... statement checking if array ($low_score_words) is empty
-                            else {
-                    ?>
-                        <h4>As you complete more tests, more information will be available here.</h4>
-                    <?php
-                        }
-                    ?>
+
+                    <form action="test.php?vocab_id=<?php echo $encoded_vocab_id_low_scores ?>" method="POST" class="form-card">
+                        <div class="alternate-button-wrap">
+                            <input type="hidden" name="form_identifier" value="HardTest">
+                            <button class="alternate-button" name="HardTest" type="submit">TAKE HARD TEST</button>
+                        </div> 
+                    </form>
+
+
                     </div> <!-- Close tests-container-inner-2 -->
                 </div> <!-- Close tests-container-outer -->
+                <div class="tests-container-outer">
+                    <div class="tests-container-inner-3">
+                        <p>The average duration between adding a word and marking it as <i>mastered</i> is <strong><?php echo $average_to_mastery; ?></strong> days for you. </p>
+                    </div>
+                </div>
                 <?php
                     } //end of if statement to check how many rows in array
                 } else {
@@ -967,58 +948,43 @@ canvas {
 <div id="tab5" class="tab-container">
     <div style="border: 0px solid green;" class="card">
         <div style="border: 0px solid blue;" class="img-container a">
-            <!-- <img src="images/progress.png" width="100px" alt=""> -->
+            <img src="images/progress.png" width="100px" alt="">
         </div>
         <!-- ########## ACHIEVEMENT SECTION START ############ -->
         <h1>SITE CHAMPION</h1>
 
-        <div class="champion-container-outer">
-            <div class="champion-container-inner-1">
-                <div style="border: 0px solid red;" class="drop-container">
-                <?php 
-                    //Check if current user has the most words
-                    if ($am_i_word_leader == 'Y') {
-                ?>
-                    <p><i class="fa-solid fa-crown" style="color: #fec700;"></i> Congratulations. You have added more words to your library than any other user of this site. Keep at it, so you don't lose this accolade.</p>
-                    <div class="drop">
-                        <p><i class="fa-solid fa-crown fa-2xl" style="color: #fec700;"></i></i></p>
-                    </div>
-                <?php
-                    }
-                ?>
-                </div>
+        <div style="border: 0px solid red;" class="drop-container">
+        <?php 
+            //Check if current user has the most words
+            if ($am_i_word_leader == 'Y') {
+        ?>
+            <div class="drop">
+                 <p><i class="fa-solid fa-ranking-star fa-2xl" style="color: #b0f0cf;"></i></p>
             </div>
-            <div class="champion-container-inner-2">
-                <div style="border: 0px solid red;" class="drop-container">
-                <?php 
-                    //Check if current user has done the most tests.
-                    if ($am_i_tests_leader == 'Y') {
-                ?>
-                    <p><i class="fa-solid fa-trophy" style="color: #c4bc00;"></i> Amazing. No one on this site is working harder than you! You have completed the most tests of anyone using this site. Keep it up. </p>
-                    <div class="drop">
-                        <p><i class="fa-solid fa-trophy fa-2xl" style="color: #c4bc00;"></i></p>
-                    </div>
-                <?php
-                    }
-                ?>
-                </div>
+        <?php
+            }
+        ?>
+        <?php 
+            //Check if current user has done the most tests.
+            if ($am_i_tests_leader == 'Y') {
+        ?>
+            <div class="drop">
+                <p><i class="fa-solid fa-medal fa-2xl" style="color: #b0f0cf;"></i></p>
             </div>
-            <div class="champion-container-inner-3">
-                <div style="border: 0px solid red;" class="drop-container">
-                <?php 
-                    //Putting this check here so that the award will display without user having to visit the 'badges.php' page.
-                    if ($am_i_platinum == 'Y') {
-                ?>
-                        <p><i class="fa-regular fa-gem" style="color: #94e3fe;"></i> Truly incredible. You are the first user of this site to unlock all the Badges. And you will stay that way, no one can take this award away from you!</p>
-                        <div class="drop">
-                            <p><i class="fa-regular fa-gem fa-2xl" style="color: #94e3fe;"></i></p>
-                        </div>
-                <?php
-                    }
-                ?>
+        <?php
+            }
+        ?>
+        <?php 
+            //Putting this check here so that the award will display without user having to visit the 'badges.php' page.
+            if ($am_i_platinum == 'Y') {
+        ?>
+                <div class="drop">
+                    <p><i class="fa-solid fa-trophy fa-2xl" style="color: #b0f0cf;"></i></p>
                 </div>
-            </div>
-        </div> <!-- End outer div -->
+        <?php
+            }
+        ?>
+        </div>
     </div>
         <!-- ########## END OF ACHIEVEMENTS SECTION ########### -->
 </div>
@@ -1028,7 +994,7 @@ canvas {
 <div id="tab6" class="tab-container">
     <div style="border: 0px solid green;" class="card">
         <div style="border: 0px solid blue;" class="img-container a">
-            <!-- <img src="images/progress.png" width="100px" alt=""> -->
+            <img src="images/progress.png" width="100px" alt="">
         </div>
         <!-- ########## ADMIN SECTION START ############ -->
         <h1>ADMIN SECTION</h1>
@@ -1074,36 +1040,27 @@ canvas {
 <!-- ############ END OF TAB 6  ############## -->
 
 
-<!-- ########## START OF LOCKED CONTENT SECTION ############# -->
-<div id="locked" class="tab-container">
-    <div class="card">
-        <div class="img-container c">
-            <!-- <img src="images/calendar.png" width="100px" alt=""> -->
-        </div>
-        <h1>PREMIUM CONTENT LOCKED</h1>
-        <div class="premium-container-outer">
-            <div class="premium-container-inner-1">
-                <p>The content on this and all other tabs, can be unlocked with a minimum payment of €1 a month. Click the cup for more details.<a href="https://ko-fi.com/the40watt" ><img src="images/kofi_symbol.png" width="25" height="25" alt="Help with hosting costs."></a> </p>
-            </div>
-        </div>
-    </div>
-</div>
 
 
     <!-- ############# START OF QUICK MENU ROW ################# -->
-    <div class="words-cards-wrapper">
+    <div class="cards-wrapper">
         <div style="width:80%;" class="card">
             <div class="img-container d">
-                <!-- <img src="images/icon-1.png" width="100px" alt=""> -->
+                <img src="images/icon-1.png" width="100px" alt="">
             </div>
             <h1>QUICK MENU</h1>
             <form action="quick-links.php" method="post" class="form-card">
-                <div class="tab-menu-button-wrap">
-                    <button class="alternate-button" name="AddWordButton" type="submit">ADD A WORD</button>                  
-                    <button  class="alternate-button" name="ViewListButton" type="submit">VIEW LIBRARY</button>
-                    <button class="alternate-button" name="TakeTestButton" type="submit">TAKE A TEST</button>
-                    <button  class="alternate-button" name="ViewBadgesButton" type="submit">VIEW BADGES</button>
-                    <button  class="alternate-button" name="ViewUserPreferences" type="submit">USER PREFERENCES</button>
+                <div class="alternate-button-wrap">
+                    <!-- <input type="submit" name="SubmitButton" class="btn btn-secondary"> -->
+                    <button style="width:20%;" class="alternate-button" name="AddWordButton" type="submit">ADD A WORD</button><p></p>
+                    <p>&nbsp;&nbsp;&nbsp;</p>
+                    <button style="width:20%;" class="alternate-button" name="ViewListButton" type="submit">VIEW LIBRARY</button><p></p>
+                    <p>&nbsp;&nbsp;&nbsp;</p>
+                    <button style="width:20%;" class="alternate-button" name="TakeTestButton" type="submit">TAKE A TEST</button><p></p>
+                    <p>&nbsp;&nbsp;&nbsp;</p>
+                    <button style="width:20%;" class="alternate-button" name="ViewBadgesButton" type="submit">VIEW BADGES</button><p></p>
+                    <p>&nbsp;&nbsp;&nbsp;</p>
+                    <button style="width:20%;" class="alternate-button" name="ViewUserPreferences" type="submit">USER PREFERENCES</button><p></p>
                 </div>
             </form>
             </div>
@@ -1114,13 +1071,15 @@ canvas {
     <!-- ############# END OF QUICK MENU ROW ################# -->
 
     <!-- ############# START OF BOTTOM ROW ################# -->
-    <div class="words-cards-wrapper">
+    <div class="cards-wrapper">
         <!-- ############# START OF WORD OF THE DAY CARD ################# -->
-        <div  class="card">
+        <div style="width:30%;" class="card">
             <div class="img-container a">
-                <!-- <img src="images/word.png" width="100px" alt=""> -->
+                <img src="images/word.png" width="100px" alt="">
             </div>
             <h1>WORD OF DAY</h1>
+            <!-- <p>Your random word is <strong><i> <?php echo $session_word ?> </i></strong>. </p> -->
+            <blockquote>
                 <?php 
                     if ($_SESSION['session_tl'] == 'XX') {
                 ?>
@@ -1128,27 +1087,21 @@ canvas {
                 <?php
                     } else {
                 ?>
-                    <div class="word-container-inner-1">
-                        <?php $user_tl_upper = strtoupper($_SESSION['session_tl']); ?>
-                        <p>Random word (<?php echo $user_tl_upper ?>) for you:</p>
-                    </div>
-                    <blockquote>
-                    <p><strong><i> <?php echo $_SESSION['session_word']; ?> </i></strong></p>
-
-                    </blockquote>
-                    <div class="word-container-inner-1">
-                        <p>Do you know what it means?</p>
-                    </div>
+                    <?php $user_tl_upper = strtoupper($_SESSION['session_tl']); ?>
+                    <h>Random word (<?php echo $user_tl_upper ?>) for you:</h3>
+                    <p style="padding-left:50px;"><strong><i> <?php echo $_SESSION['session_word']; ?> </i></strong></p>
+                    <p>Do you know what it means?</p>
                 <?php
                     }
                 ?>
+            </blockquote>
         </div>
         <!-- ############# END OF WORD OF THE DAY CARD ################# -->
 
 
-        <div class="card">
+        <div style="width:30%;" class="card">
             <div class="img-container a">
-                <!-- <img src="images/word.png" width="100px" alt=""> -->
+                <img src="images/word.png" width="100px" alt="">
             </div>
             <h1>YOUR WORD CLOUD</h1>
             <div class="cloud-container">
@@ -1170,45 +1123,39 @@ canvas {
 
         <!-- ###################### SCRIPTS SECTION #########################-->
         
-        <!-- <script>
+        <script>
             /**
              *  This script controls the tabbing between on the main page.
              */
-            function showTab(tabId) {
-                //Hide all tabs
-                let tabs = document.querySelectorAll('.tab-container');
-                tabs.forEach (tab => tab.classList.remove('active'));
+        //     function showTab(tabId) {
+        //         //Hide all tabs
+        //         let tabs = document.querySelectorAll('.tab-container');
+        //         tabs.forEach (tab => tab.classList.remove('active'));
 
-                //Show the selected tab
-                document.getElementById(tabId).classList.add('active');                
-            }
-        </script> -->
+        //         //Show the selected tab
+        //         document.getElementById(tabId).classList.add('active');
 
-<script>
-    // This should be set dynamically from PHP
-    var isPremiumUser = <?php echo isset($_SESSION['is_premium']) && $_SESSION['is_premium'] ? 'true' : 'false'; ?>;
-</script>
 
-<script>
-    function showTab(tabId) {
-    // Hide all tabs
-    let tabs = document.querySelectorAll('.tab-container');
-    tabs.forEach(tab => tab.style.display = 'none'); 
+        //             // If locked, show paywall message fuck
+        //                 // if (!document.getElementById("tab-container" + tabId)) {
+        //                 // document.getElementById("locked").style.display = "block";
+        //                 // }
+        //     }
+        // </script>
 
-    // If the selected tab exists, show it
-    let selectedTab = document.getElementById(tabId);
 
-    if (selectedTab) {
-        // Check for paywall protection
-        if (selectedTab.classList.contains('premium') && !isPremiumUser) {
-            document.getElementById("locked").style.display = "block"; // Show locked message
-        } else {
-            selectedTab.style.display = "block"; // Show the selected tab
-        }
+
+ <script>
+function showTab(tabId) {
+    document.querySelectorAll('.tab-container').forEach(tab => tab.style.display = 'none'); // Hide all tabs
+    document.getElementById("tab-container" + tabId)?.style.display = "block"; // Show selected tab
+
+    // If locked, show paywall message
+    if (!document.getElementById("tab" + tabId)) {
+        document.getElementById("locked").style.display = "block";
     }
 }
-    </script>
-
+</script> 
 
 
         <?php       
@@ -1868,8 +1815,8 @@ canvas {
                 //color: 'random-dark', // Use random dark colors for the words
                 //backgroundColor: '#f4f4f4', // Background color
                 color: function() {
-                return ([ "#D53E4F","#F46D43","#FDAE61","#ffbf00",
-                            "#06d71b","#a4f178","#3520db","#e017b8",
+                return ([ "#D53E4F","#F46D43","#FDAE61","#FEE088",
+                            "#FFFFBF","#E6F596","#ABDDA4","#66C2A5",
                             "#3288BD"])[Math.floor(Math.random() * 9)]
                 },
                 backgroundColor: "#FFFFFF",

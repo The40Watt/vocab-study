@@ -29,6 +29,13 @@
 
     09-03-25: Line 302, changed from POST method to GET method. This is to stop the warning - 'Confirm Form Resubmission' issue.
 
+    20-03-25: Changed the 'Filter Words' button to be a 'Button' element. Also changing style to the 'alternate' style. 
+
+    23-03-25: Added check for rowcount. If it is 0, dont' render the table.
+
+    31-03-25:   Live fix. The UTF-8 encoding is not working correclty so some characters not displaying correctly. I've added a line just before the DB query
+                is run to try to enforce UTF-8.
+
 
 -->
 
@@ -73,80 +80,7 @@
 </head>
 
 <style>
-  .container {
-  display: block;
-  position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-size: 18px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  color: #37596f;
-  font-family: "Rubik", sans-serif;
-  font-weight: 700;
 
-}
-
-/* Hide the browser's default checkbox */
-.container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-/* Create a custom checkbox */
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
-  box-shadow: 2px 2px 0 0 black;
-
-}
-
-/* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-
-/* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
-  background-color: #2196F3;
-}
-
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-/* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
-  display: block;
-
-}
-
-/* Style the checkmark/indicator */
-.container .checkmark:after {
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-
-}
 
 </style>
 
@@ -156,6 +90,20 @@
   <?php include "include/nav.php" ?>
 </header>
 <main>
+
+		<div class="main-section">
+			<div class="page-title">
+				<h1>EXPLORE YOUR LIBRARY</h1>
+        <?php 
+          if ($rowcount == 0) {
+        ?>
+          <h4>Looks like you not added any words yet :-(</h4>
+        <?php
+          }
+        ?>
+			</div>
+  	</div>
+
   <p></p>
 
     <!-- Give the user some additional stats if they want to see them. . -->
@@ -174,6 +122,9 @@
           <?php 
             //set user_id so we can only see which words the logged in user has entered.
             $user_id = $_SESSION['user_id'];
+
+            //Trying to enforce UTF-8
+            $conn->set_charset("utf8mb4");
 
             //php code to select from db
             $new_sql = "SELECT `category_desc`, COUNT(*) AS cat_count FROM `tb_vocab` WHERE user_id='$user_id' GROUP BY category_desc";
@@ -199,10 +150,10 @@
 
   <div class="card">
     <!-- Dropdown to select category -->
-    <div class="custom-select">
-      <form method="GET">
-        <label for="category-label" class="new-input-label">Choose a category. <span style="font-size: 10px;">(Leave blank to see all.)</span></label>
-          <select name="category" id="category" class="new-input-field" autofocus>
+    <!-- <div class="custom-select"> -->
+      <form method="GET" class="card-form">
+        <label for="category" class="alternate-input-label">Choose a category. <span style="font-size: 10px;">(Leave blank to see all.)</span></label>
+          <select name="category" id="category" class="alternate-input-field" autofocus>
             <option value="">-- Category --</option>    
               <?php
                   if ($result->num_rows > 0 ) {
@@ -213,14 +164,15 @@
               ?>
           </select>
           <p></p>
-          <label class="container" style="font-family: 'Rubik', arial, sans-serif;">Hide Mastered Words
+          <label class="cb-container" for="hide">Hide Mastered Words
         <input type="checkbox" id="hide" name="hide" value="Hide">
       <span class="checkmark"></span></label>
-
-          <p></p>
-        <input style="width:100%;" type="submit" value="FILTER WORDS" class="btn btn--secondary">
+      
+      <div class="alternate-button-wrap">
+        <button class="alternate-button" name="SubmitButton" type="submit">FILTER WORDS</button>
+      </div>
       </form>
-    </div>
+    <!-- </div> -->
   </div>
 
   <p></p>
@@ -281,15 +233,17 @@
   <?php } ?>
 
 
+<?php
+    if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['category'])) {
+        $category_desc = $_GET['category'];
+    } else {
+        $category_desc = ""; // Default value to prevent errors
+    }
+?>
 
-  <?php
-      //Get value from drop-down
-      if ($_SERVER["REQUEST_METHOD"] == "GET") {
-          $category_desc = $_GET['category'];
-
-      }
-  ?>
-
+<?php 
+  if ($rowcount > 0) {
+?>
   <table class="hoverTable">
     <thead>
       <tr>
@@ -328,7 +282,8 @@
             $category_count = count_records_by_category($category_desc);
         }
 
-
+        //Trying to enforce UTF-8
+        mysqli_set_charset($conn, "utf8mb4");
 
         $run = mysqli_query($conn, $sql);
 
@@ -337,14 +292,14 @@
     <tr>
         <td><?php echo $row['fr_text'] ?></td>
         <td><?php echo $row['en_text'] ?></td>
-        <td><a href="edit-record.php?id=<?php echo $row['id']; ?>"><i class="fa fa-edit"></i></a></td>
-        <td><a href="delete-record.php?id=<?php echo $row['id']; ?>"><i class="fa-regular fa-trash-can align-center" style="color: #ec4e32;"></i></a></td>
+        <td><a href="edit-record.php?id=<?php echo $row['id']; ?>"><i class="fa fa-edit fa-lg"></i></a></td>
+        <td><a href="delete-record.php?id=<?php echo $row['id']; ?>"><i class="fa-regular fa-trash-can fa-lg align-center" style="color: #ec4e32;"></i></a></td>
         <td>
           <a href="master-record.php?id=<?php echo $row['id']; ?>&is_mastered=<?php echo $row['is_mastered']; ?>"> <!-- Pass variables in URL -->
             <?php if ($row['is_mastered'] === 'Y') { ?>
-              <i class="fa-regular fa-circle-check" style="color: #b0f0cf;"></i>
+              <i class="fa-regular fa-circle-check fa-lg" style="color: #b0f0cf;"></i>
             <?php } else { ?>
-              <i class="fa-regular fa-circle-xmark" style="color: #fb0909;"></i></i>
+              <i class="fa-regular fa-circle-xmark fa-lg" style="color: #fb0909;"></i></i>
             <?php } ?>
           </a>
         </td>
@@ -357,6 +312,9 @@
 
     </tbody>
   </table>
+<?php 
+  }
+?>
   <p></p></br>
 </main>  
 

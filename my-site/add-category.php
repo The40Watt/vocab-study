@@ -51,6 +51,9 @@ try {
 
     $new_category_upper = strtoupper($new_category); //Force category to be uppercase.
 
+    //Trying to enforce UTF-8
+    $conn->set_charset("utf8mb4");
+
     //SQL to insert new category.
     $sql = "INSERT INTO `tb_user_categories` (`user_id`, `category_desc`) VALUES ($user_id, '$new_category_upper')";
     $conn->query($sql);

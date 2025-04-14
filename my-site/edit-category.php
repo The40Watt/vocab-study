@@ -52,6 +52,11 @@ $user_data = check_login($conn); //if logged in, this variable will contain the 
 	<main>
 
             <p>&nbsp;</p>
+            <div class="main-section">
+                <div class="page-title">
+                    <h1>EDIT DESCRIPTION</h1>
+                </div>
+            </div>
             <p>&nbsp;</p>
 
         <div class="card">
@@ -59,6 +64,10 @@ $user_data = check_login($conn); //if logged in, this variable will contain the 
             <!-- Find the category using 'id' and 'user_id'. -->
             <?php           
                 $id = $_GET['id'];
+
+                //Trying to enforce UTF-8
+                $conn->set_charset("utf8mb4");
+
                 $sql = "SELECT * FROM tb_user_categories WHERE id='$id' and user_id='$user_id'";
                 $run = mysqli_query($conn, $sql);
                 $row = mysqli_fetch_array($run);
@@ -67,17 +76,19 @@ $user_data = check_login($conn); //if logged in, this variable will contain the 
 		    <form action="update-category.php" method="post" class="form-card">
                 <!-- Adding hidden field to provide information for sql update. -->
                 <input type="text" value="<?php echo $id; ?>" name="row_id" hidden>
-                <div class="input">
-                    <input type="text" name="category_desc" class="new-input-field" value="<?php echo $row['category_desc']; ?>">
-                    <label class="new-input-label">Edit Category</label>
+                <div class="alternate-input">
+                    <input id="category_desc" type="text" name="category_desc" class="alternate-input-field" value="<?php echo $row['category_desc']; ?>">
+                    <label for="category_desc" class="alternate-input-label">Edit Category</label>
                 </div>
-                <div class="action">
+                <div class="alternate-button-wrap">
                     <!-- <input type="submit" name="SubmitButton" class="btn btn-secondary"> -->
-                    <button style="width:100%;" class="btn btn--secondary" name="SubmitButton" type="submit">MAKE CHANGE</button><p></p>
-                    <button style="width:100%;" class="btn" name="CancelButton" type="submit">CANCEL</button>
+                    <button class="alternate-button" name="SubmitButton" type="submit">MAKE CHANGE</button><p></p>
+                    <button class="alternate-button-cancel" name="CancelButton" type="submit">CANCEL</button>
                 </div>
 		    </form> 
         </div>
+
+        
 
 	</main>
 
