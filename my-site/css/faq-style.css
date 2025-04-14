@@ -525,10 +525,11 @@ details {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: bold;
+    font-weight: 500;
     border-radius: 0;
     font-family: var(--googleMontserrat);
-    box-shadow: 5px 5px 0 0 var(--btn-color);
+    /* box-shadow: 5px 5px 0 0 var(--btn-color); */
+    box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32);
   }
   
   .accordion i {
@@ -547,9 +548,10 @@ details {
     background-color: white;
     overflow: hidden;
    /* background-color: #f1f7f5;*/
-   background-color: rgb(176, 240, 207);
+    background-color: rgb(176, 240, 207);
     display: none;
-    box-shadow: 10px 10px 10px rgba(0,0,0,0.3);
+    /* box-shadow: 10px 10px 10px rgba(0,0,0,0.3); */
+    box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); 
   }
   .pannel p {
     color: rgba(0, 0, 0, 0.7);
@@ -559,14 +561,14 @@ details {
 
   
   .faq {
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 0px solid rgba(0, 0, 0, 0.2);
     margin: 10px 0;
-    box-shadow: 5px 5px 0 0 var(--btn-color);
-    border-right: 4px solid #444;
+    /* box-shadow: 5px 5px 0 0 var(--btn-color); */
+    /* border-right: 4px solid #444;
     border-bottom: 4px solid #444;
     border-left: 1px solid #444;
-    border-top: 1px solid #444;
-
+    border-top: 1px solid #444; */
+    /* box-shadow: 5.9px 11.8px 11.8px hsl(0deg 0% 0% / 0.32); */
   }
   .faq.active {
     border: none;
@@ -577,3 +579,24 @@ details {
   /* END OF FAQ STYLES */
 
 
+/* STYLES FOR USE ON NEW PAGE HEADINGS */
+.main-section{
+    text-align: center;
+    margin-top: 70px;
+    line-height: 2;
+    font-family: var(--googleMontserrat);
+    border: 0px solid red;
+}
+
+.main-section .page-title h1{
+    font-size: 4rem;
+    line-height: 1;
+    font-family: var(--googleMontserrat);
+    font-weight: 400;
+}
+
+.main-section .page-title h3{
+    font-size: 1.5rem;
+    line-height: 1;
+    font-family: var(--googleMontserrat);
+}
